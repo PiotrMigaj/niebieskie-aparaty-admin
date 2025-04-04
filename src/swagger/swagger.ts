@@ -1,4 +1,5 @@
 import swaggerJSDoc from 'swagger-jsdoc';
+import logger from '../utils/logger';
 
 // Swagger definition
 const swaggerOptions = {
@@ -15,9 +16,10 @@ const swaggerOptions = {
     servers: [
       {
         // Dynamically set the URL based on the environment
-        url: process.env.NODE_ENV === 'production' 
-          ? 'https://admin.niebieskie-aparaty.pl' 
-          : `http://localhost:${process.env.PORT || 3000}`,
+        url:
+          process.env.NODE_ENV === 'production'
+            ? 'https://admin.niebieskie-aparaty.pl'
+            : `http://localhost:${process.env.PORT || 3000}`,
         description: 'Niebieskie Aparaty Admin API',
       },
     ],
@@ -45,7 +47,7 @@ const swaggerOptions = {
   ],
 };
 
-console.log(JSON.stringify(swaggerOptions));
+logger.info(JSON.stringify(swaggerOptions));
 // Initialize swagger-jsdoc
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 
