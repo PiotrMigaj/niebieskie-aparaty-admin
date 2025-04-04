@@ -17,7 +17,7 @@ const swaggerOptions = {
         // Dynamically set the URL based on the environment
         url: process.env.NODE_ENV === 'production' 
           ? 'https://admin.niebieskie-aparaty.pl' 
-          : `https://admin.niebieskie-aparaty.pl`,
+          : `http://localhost:${process.env.PORT || 3000}`,
         description: 'Niebieskie Aparaty Admin API',
       },
     ],
