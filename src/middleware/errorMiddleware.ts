@@ -14,7 +14,7 @@ export const errorHandler = (err: AppError, req: Request, res: Response, next: N
 
   res.status(statusCode).json({
     status: statusCode,
-    message
+    message,
   });
 };
 
@@ -22,4 +22,4 @@ export const createAppError = (statusCode: number, message: string): AppError =>
   const error = new Error(message) as AppError;
   error.statusCode = statusCode;
   return error;
-}
+};

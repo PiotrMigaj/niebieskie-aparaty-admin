@@ -18,7 +18,6 @@ export const generateToken = (id: string, username: string): string => {
     JWT_SECRET, // Secret or private key (must be a valid key)
     {
       expiresIn: JWT_EXPIRES_IN, // Valid expiration time (string or number)
-    }
+    },
   );
 };
-

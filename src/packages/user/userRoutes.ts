@@ -28,7 +28,7 @@ const router = express.Router();
  *               email:
  *                 type: string
  *                 description: The email of the user.
- *                 example: john_doe@gmail.com 
+ *                 example: john_doe@gmail.com
  *               fullName:
  *                 type: string
  *                 description: The full name of the user.
@@ -113,7 +113,6 @@ router.post('', authenticate, createUser);
  *         description: Unauthorized, invalid token
  */
 router.get('', authenticate, getAllUsers);
-
 
 /**
  * @swagger

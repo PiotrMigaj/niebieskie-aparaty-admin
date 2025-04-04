@@ -1,6 +1,6 @@
-import express from "express";
-import { createEvent, getEventsByUsername } from "./eventController";
-import { authenticate } from "../../middleware/authMiddleware";
+import express from 'express';
+import { createEvent, getEventsByUsername } from './eventController';
+import { authenticate } from '../../middleware/authMiddleware';
 
 const router = express.Router();
 
@@ -84,7 +84,7 @@ const router = express.Router();
  *       404:
  *         description: Not found, user with such username does not exist
  */
-router.post("", authenticate, createEvent);
+router.post('', authenticate, createEvent);
 
 /**
  * @swagger
@@ -180,6 +180,6 @@ router.post("", authenticate, createEvent);
  *       401:
  *         description: Unauthorized, invalid token
  */
-router.get("/:username", authenticate, getEventsByUsername);
+router.get('/:username', authenticate, getEventsByUsername);
 
 export default router;

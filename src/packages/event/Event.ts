@@ -1,8 +1,8 @@
-import { PutCommand, ScanCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
-import { dynamoDb } from "../../config/db";
-import { v4 as uuidv4 } from "uuid";
+import { PutCommand, ScanCommand, GetCommand } from '@aws-sdk/lib-dynamodb';
+import { dynamoDb } from '../../config/db';
+import { v4 as uuidv4 } from 'uuid';
 
-const TABLE_NAME = "Events";
+const TABLE_NAME = 'Events';
 
 export interface EventDto {
   eventId: string;
@@ -23,7 +23,7 @@ export class Event {
     private description: string,
     private title: string,
     private username: string,
-    private imagePlaceholderObjectKey: string | null = null
+    private imagePlaceholderObjectKey: string | null = null,
   ) {
     this.eventId = uuidv4();
     this.createdAt = new Date();
@@ -49,9 +49,9 @@ export class Event {
   static async findByUsername(username: string): Promise<Event[]> {
     const command = new ScanCommand({
       TableName: TABLE_NAME,
-      FilterExpression: "username = :username", // Filter by username
+      FilterExpression: 'username = :username', // Filter by username
       ExpressionAttributeValues: {
-        ":username": username,
+        ':username': username,
       },
     });
     const { Items } = await dynamoDb.send(command);

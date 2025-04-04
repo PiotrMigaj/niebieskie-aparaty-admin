@@ -1,6 +1,6 @@
-import express from "express";
-import { createFile } from "./fileController";
-import { authenticate } from "../../middleware/authMiddleware";
+import express from 'express';
+import { createFile } from './fileController';
+import { authenticate } from '../../middleware/authMiddleware';
 
 const router = express.Router();
 
@@ -78,6 +78,6 @@ const router = express.Router();
  *       404:
  *         description: Not found, event with such eventId does not exist
  */
-router.post("", authenticate, createFile);
+router.post('', authenticate, createFile);
 
 export default router;

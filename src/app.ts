@@ -9,7 +9,7 @@ import swaggerUi from 'swagger-ui-express';
 import userRoutes from './packages/user/userRoutes';
 import eventRoutes from './packages/event/eventRoutes';
 import fileRoutes from './packages/file/fileRoutes';
-import authRoutes from './packages/auth/authRoutes'
+import authRoutes from './packages/auth/authRoutes';
 
 // Import middleware
 import { errorHandler } from './middleware/errorMiddleware';
@@ -21,8 +21,8 @@ import swaggerDocs from './swagger/swagger';
 import './config/passport';
 
 // Import DB connection
-import { connectDB } from "./config/db";
-import logger from "./utils/logger";
+import { connectDB } from './config/db';
+import logger from './utils/logger';
 
 // Create Express app
 const app: Express = express();
@@ -41,7 +41,7 @@ app.use(passport.initialize());
 app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/files', fileRoutes);
-app.use('/api/auth',authRoutes);
+app.use('/api/auth', authRoutes);
 
 // Swagger Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
@@ -52,7 +52,7 @@ app.use(errorHandler);
 // Connect to DynamoDB before exporting the app
 connectDB()
   .then(() => {
-    logger.info("DynamoDB connection is ready.");
+    logger.info('DynamoDB connection is ready.');
   })
   .catch((error) => {
     logger.error(`DynamoDB connection failed: ${error}`);

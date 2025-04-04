@@ -1,8 +1,8 @@
-import { PutCommand, GetCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
-import { dynamoDb } from "../../config/db";
+import { PutCommand, GetCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { dynamoDb } from '../../config/db';
 import bcrypt from 'bcrypt';
 
-const TABLE_NAME = "Users";
+const TABLE_NAME = 'Users';
 const SALT_ROUNDS = 10;
 
 interface UserDto {
@@ -11,12 +11,12 @@ interface UserDto {
   fullName: string;
   role: UserRole;
   createdAt: Date;
-  active: boolean
+  active: boolean;
 }
 
 enum UserRole {
-  USER = "USER",
-  ADMIN = "ADMIN",
+  USER = 'USER',
+  ADMIN = 'ADMIN',
 }
 
 export class User {
@@ -28,7 +28,7 @@ export class User {
     private username: string,
     private email: string,
     private fullName: string,
-    private password: string
+    private password: string,
   ) {
     this.username = username;
     this.createdAt = new Date();
@@ -61,11 +61,11 @@ export class User {
     const command = new GetCommand({
       TableName: TABLE_NAME,
       Key: {
-        username: username,  
+        username: username,
       },
     });
     const { Item } = await dynamoDb.send(command);
-    return !!Item;  
+    return !!Item;
   }
 
   static async findAll(): Promise<User[]> {
@@ -74,19 +74,13 @@ export class User {
     });
     const { Items } = await dynamoDb.send(command);
     return (Items ?? []).map((item) => {
-      const user = new User(
-        item.username,
-        item.email,
-        item.fullName,
-        item.password 
-      );
+      const user = new User(item.username, item.email, item.fullName, item.password);
       user.createdAt = new Date(item.createdAt);
       user.role = item.role;
       user.active = item.active;
       return user;
     });
   }
-  
 
   toResponse(): UserDto {
     return {
