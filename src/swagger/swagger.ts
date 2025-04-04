@@ -45,6 +45,7 @@ const swaggerOptions = {
   ],
 };
 
+console.log(JSON.stringify(swaggerOptions));
 // Initialize swagger-jsdoc
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 
