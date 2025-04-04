@@ -10,7 +10,6 @@ const PORT = process.env.PORT || 3000;
 // Start server
 const server = app.listen(PORT, () => {
   logger.info(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-  logger.info(`Swagger docs available at http://localhost:${PORT}/api-docs`);
 });
 
 // Handle unhandled promise rejections
