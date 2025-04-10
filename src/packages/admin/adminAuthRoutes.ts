@@ -5,7 +5,8 @@ const router = Router();
 
 // Route for rendering the login page (you’ll use EJS for the login page)
 router.get('/login', (req: Request, res: Response): void => {
-  res.render('login'); // Assuming you have a login.ejs view
+  const messages = req.flash('error');
+  res.render('login', { messages }); // Assuming you have a login.ejs view
 });
 
 // Route for handling login POST request

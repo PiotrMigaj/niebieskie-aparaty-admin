@@ -6,6 +6,7 @@ import passport from 'passport';
 import session from 'express-session'; // Import express-session correctly
 import { SessionOptions } from 'express-session';
 import swaggerUi from 'swagger-ui-express';
+import flash from 'connect-flash';
 
 // Import routes
 import adminAuthRoutes from './packages/admin/adminAuthRoutes';
@@ -69,6 +70,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
+app.use(flash());
 
 // Redirect from / to /api-docs
 app.get('/', (req, res) => {
