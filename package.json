@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon",
-    "build": "tsc",
+    "build": "tsc && cp -r src/views dist/views",
     "lint": "eslint src/**/*.ts",
     "test": "jest",
     "format": "prettier --write .",
