@@ -34,7 +34,13 @@ const app: Express = express();
 
 // Set up EJS as the templating engine
 app.set('view engine', 'ejs'); // Use EJS to render views
-app.set('views', path.join(__dirname, 'views')); // Set the views directory
+// Ensure you use the correct path to your views directory
+const viewsPath =
+  process.env.NODE_ENV === 'production'
+    ? path.join(__dirname, '../dist/views') // For production, views should be in dist/views
+    : path.join(__dirname, 'views'); // In dev, they should be in the 'views' folder in src
+
+app.set('views', viewsPath); // Set the views directory
 
 // Session Configuration
 const sessionOptions: SessionOptions = {
