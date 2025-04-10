@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Request, Response, NextFunction } from 'express';
 import logger from '../utils/logger';
 
@@ -6,6 +7,7 @@ interface AppError extends Error {
   errors?: any[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorHandler = (err: AppError, req: Request, res: Response, next: NextFunction) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Internal Server Error';

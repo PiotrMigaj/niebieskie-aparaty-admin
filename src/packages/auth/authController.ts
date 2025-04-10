@@ -21,7 +21,7 @@ export const loginAdmin = asyncHandler(async (req: Request, res: Response) => {
     const token = generateToken('admin', username);
     res.json({ token });
   } else {
-    console.log('Error: from here');
+    // console.log('Error: from here');
     throw createAppError(401, 'Invalid credentials');
   }
 });
