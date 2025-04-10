@@ -40,6 +40,8 @@ const viewsPath =
     ? path.join(__dirname, '../dist/views') // For production, views should be in dist/views
     : path.join(__dirname, 'views'); // In dev, they should be in the 'views' folder in src
 
+logger.info('viewPath: ' + viewsPath);
+
 app.set('views', viewsPath); // Set the views directory
 
 // Session Configuration
