@@ -1,4 +1,4 @@
-import { PutCommand, GetCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { dynamoDb } from '../../config/db';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -18,16 +18,24 @@ export class File {
   private fileId: string;
   private createdAt: Date;
   private dateOfLastDownload: Date | null;
+  private description: string;
+  private eventId: string;
+  private username: string;
+  private objectKey: string | null;
 
   constructor(
-    private description: string,
-    private eventId: string,
-    private username: string,
-    private objectKey: string | null = null,
+    description: string,
+    eventId: string,
+    username: string,
+    objectKey: string | null = null,
   ) {
     this.fileId = uuidv4();
     this.createdAt = new Date();
-    this.dateOfLastDownload = null; // Default value is null
+    this.dateOfLastDownload = null;
+    this.description = description;
+    this.eventId = eventId;
+    this.username = username;
+    this.objectKey = objectKey;
   }
 
   async save(): Promise<File> {
