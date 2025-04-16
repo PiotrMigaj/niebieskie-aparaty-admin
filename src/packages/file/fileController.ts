@@ -9,14 +9,14 @@ interface CreateFileRequest {
   description: string;
   eventId: string;
   username: string;
-  objctKey: string | null;
+  objectKey: string | null;
 }
 
 // @desc    Create new file
 // @route   POST /api/files
 // @access  Private (JWT protected)
 export const createFile = asyncHandler(async (req: Request, res: Response) => {
-  const { description, eventId, username, objctKey } = req.body as CreateFileRequest;
+  const { description, eventId, username, objectKey } = req.body as CreateFileRequest;
   const userExists = await User.existsByUsername(username);
   if (!userExists) {
     throw createAppError(404, 'User with such username does not exist');
@@ -25,7 +25,7 @@ export const createFile = asyncHandler(async (req: Request, res: Response) => {
   if (!eventExists) {
     throw createAppError(404, 'Event with such eventId does not exist');
   }
-  const file = new File(description, eventId, username, objctKey);
+  const file = new File(description, eventId, username, objectKey);
   const savedFile = await file.save();
   const fileDto = savedFile.toResponse();
   res.status(201).json({ fileDto });
