@@ -45,9 +45,6 @@ export const createUser = asyncHandler(async (req: Request, res: Response) => {
 export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
   const users = await User.findAll();
 
-  // Log raw user instances
-  console.log('Fetched Users:', users);
-
   // Map to DTOs (excluding password)
   const userDtos = users.map((user) => user.toResponse());
 
