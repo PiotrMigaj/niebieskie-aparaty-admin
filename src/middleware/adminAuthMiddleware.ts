@@ -4,9 +4,18 @@ import { Request, Response, NextFunction } from 'express';
 // eslint-disable-next-line consistent-return
 const ensureAdminSession = (req: Request, res: Response, next: NextFunction): void => {
   if (req.isAuthenticated()) {
-    return next(); // Continue to the next middleware
+    return next();
   }
-  res.redirect('/login'); // Redirect to login if not authenticated
+
+  // Check if the request expects JSON
+  if (
+    req.headers.accept?.includes('application/json') ||
+    req.headers['content-type'] === 'application/json'
+  ) {
+    res.status(401).json({ error: 'Unauthorized' });
+  } else {
+    res.redirect('/login');
+  }
 };
 
 export default ensureAdminSession;

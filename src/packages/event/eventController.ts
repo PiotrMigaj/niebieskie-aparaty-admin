@@ -50,3 +50,22 @@ export const getEventsByUsername = asyncHandler(async (req: Request, res: Respon
   });
   res.status(200).json({ eventsDto });
 });
+
+// @desc    Update imagePlaceholderObjectKey for an event
+// @route   PUT /api/events/:eventId
+// @access  Private (JWT protected)
+export const updateEventImagePlaceholder = asyncHandler(async (req: Request, res: Response) => {
+  const { eventId } = req.params;
+  const { imagePlaceholderObjectKey } = req.body as { imagePlaceholderObjectKey: string | null };
+
+  // Check if event exists
+  const eventExists = await Event.existsById(eventId);
+  if (!eventExists) {
+    throw createAppError(404, 'Event with such ID does not exist');
+  }
+
+  // Call the update method from the Event class
+  await Event.updateImagePlaceholderObjectKey(eventId, imagePlaceholderObjectKey);
+
+  res.status(200).json({ message: 'Event updated successfully' });
+});

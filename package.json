@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon",
-    "build": "tsc && cp -r src/views dist/views",
+    "build": "tsc && mkdir -p dist/views && cp -r src/views/* dist/views && cp -r src/public dist/public",
     "lint": "eslint src/**/*.ts",
     "test": "jest",
     "format": "prettier --write .",
@@ -22,6 +22,8 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.515.0",
     "@aws-sdk/lib-dynamodb": "^3.515.0",
+    "@aws-sdk/client-s3": "^3.410.0",
+    "@aws-sdk/s3-request-presigner": "^3.410.0",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",

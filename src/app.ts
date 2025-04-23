@@ -7,6 +7,7 @@ import session from 'express-session'; // Import express-session correctly
 import { SessionOptions } from 'express-session';
 import swaggerUi from 'swagger-ui-express';
 import flash from 'connect-flash';
+import { Request, Response } from 'express';
 
 // Import routes
 import adminAuthRoutes from './packages/admin/adminAuthRoutes';
@@ -14,6 +15,7 @@ import userRoutes from './packages/user/userRoutes';
 import eventRoutes from './packages/event/eventRoutes';
 import fileRoutes from './packages/file/fileRoutes';
 import authRoutes from './packages/auth/authRoutes';
+import uploadRoutes from './packages/upload/uploadRoutes';
 
 // Import middleware
 import { errorHandler } from './middleware/errorMiddleware';
@@ -45,6 +47,15 @@ logger.info('viewPath: ' + viewsPath);
 
 app.set('views', viewsPath); // Set the views directory
 
+const publicPath =
+  process.env.NODE_ENV === 'production'
+    ? path.join(__dirname, '../dist/public')
+    : path.join(__dirname, 'public');
+
+logger.info('publicPath: ' + publicPath);
+
+app.use(express.static(publicPath));
+
 // Session Configuration
 const sessionOptions: SessionOptions = {
   secret: process.env.SESSION_SECRET || 'your_session_secret', // Secret for signing the session ID cookie
@@ -68,7 +79,23 @@ app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      // styleSrc: ["'self'", 'https:'], // Allow CDN styles if needed
+      connectSrc: [
+        "'self'",
+        'https://niebieskie-aparaty-client-gallery.s3.eu-central-1.amazonaws.com', // ✅ allow uploads
+      ],
+      imgSrc: ["'self'", 'data:', 'https:'],
+      fontSrc: ["'self'", 'https:'],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  }),
+);
 app.use(morgan('dev'));
 app.use(flash());
 
@@ -83,9 +110,37 @@ app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/upload', uploadRoutes);
 
 // Swagger Documentation
-app.use('/api-docs', ensureAdminSession, swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+// Serve the static swagger files first
+app.use('/api-docs', swaggerUi.serve);
+
+// Apply middleware and custom swagger setup
+app.get('/api-docs', ensureAdminSession, (req: Request, res: Response) => {
+  const token = (req.session as any).jwtToken;
+
+  const swaggerUiOptions = {
+    swaggerOptions: {
+      authAction: {
+        bearerAuth: {
+          name: 'bearerAuth',
+          schema: {
+            type: 'http',
+            in: 'header',
+            name: 'Authorization',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+          },
+          value: `${token}`,
+        },
+      },
+    },
+  };
+
+  const html = swaggerUi.generateHTML(swaggerDocs, swaggerUiOptions);
+  res.send(html);
+});
 
 // Error handling middleware
 app.use(errorHandler);

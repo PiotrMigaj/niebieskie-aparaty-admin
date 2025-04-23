@@ -1,4 +1,4 @@
-import { PutCommand, ScanCommand, GetCommand } from '@aws-sdk/lib-dynamodb';
+import { PutCommand, ScanCommand, GetCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import { dynamoDb } from '../../config/db';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -78,6 +78,23 @@ export class Event {
     });
     const { Item } = await dynamoDb.send(command);
     return !!Item; // Returns true if the item exists, false otherwise
+  }
+
+  static async updateImagePlaceholderObjectKey(
+    eventId: string,
+    newKey: string | null,
+  ): Promise<void> {
+    const command = new UpdateCommand({
+      TableName: TABLE_NAME,
+      Key: { eventId },
+      UpdateExpression: 'SET imagePlaceholderObjectKey = :newKey',
+      ExpressionAttributeValues: {
+        ':newKey': newKey,
+      },
+      ConditionExpression: 'attribute_exists(eventId)', // Optional: only update if item exists
+    });
+
+    await dynamoDb.send(command);
   }
 
   toResponse(): EventDto {

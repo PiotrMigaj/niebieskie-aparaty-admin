@@ -1,5 +1,5 @@
 import express from 'express';
-import { createEvent, getEventsByUsername } from './eventController';
+import { createEvent, getEventsByUsername, updateEventImagePlaceholder } from './eventController';
 import { authenticate } from '../../middleware/authMiddleware';
 
 const router = express.Router();
@@ -181,5 +181,55 @@ router.post('', authenticate, createEvent);
  *         description: Unauthorized, invalid token
  */
 router.get('/:username', authenticate, getEventsByUsername);
+
+/**
+ * @swagger
+ * /api/events/{eventId}:
+ *   put:
+ *     summary: Update the image placeholder for an event
+ *     description: This endpoint updates the image placeholder object key for an existing event.
+ *     tags:
+ *       - Events
+ *     security:
+ *       - bearerAuth: []  # JWT token authentication
+ *     parameters:
+ *       - in: path
+ *         name: eventId
+ *         required: true
+ *         description: The unique identifier of the event to update.
+ *         schema:
+ *           type: string
+ *           example: "a1b2c3d4-e5f6-7890-abcd-efghijklmnop"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               imagePlaceholderObjectKey:
+ *                 type: string
+ *                 description: The new object key for the event's image placeholder (can be null to remove the placeholder).
+ *                 example: "event_images/new_placeholder.jpg"
+ *     responses:
+ *       200:
+ *         description: Event image placeholder successfully updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Success message.
+ *                   example: "Event updated successfully"
+ *       401:
+ *         description: Unauthorized, invalid token
+ *       404:
+ *         description: Not found, event with such ID does not exist
+ *       400:
+ *         description: Bad request, invalid or missing parameters
+ */
+router.put('/:eventId', authenticate, updateEventImagePlaceholder);
 
 export default router;
