@@ -8,6 +8,7 @@ import { SessionOptions } from 'express-session';
 import swaggerUi from 'swagger-ui-express';
 import flash from 'connect-flash';
 import { Request, Response } from 'express';
+import favicon from 'serve-favicon';
 
 // Import routes
 import adminAuthRoutes from './packages/admin/adminAuthRoutes';
@@ -53,7 +54,7 @@ const publicPath =
     : path.join(__dirname, 'public');
 
 logger.info('publicPath: ' + publicPath);
-
+app.use(favicon(path.join(publicPath, 'favicon.ico')));
 app.use(express.static(publicPath));
 
 // Session Configuration
