@@ -13,12 +13,19 @@ export class UserController {
   });
 
   showCreateForm = asyncHandler(async (req: Request, res: Response) => {
-    res.render('users/create');
+    res.render('users/create', { error: null, formData: {} });
   });
 
   createUser = asyncHandler(async (req: Request, res: Response) => {
     const { username, email, fullName, password } = req.body;
-    await this.userFacade.createUser(username, email, fullName, password);
-    res.redirect('/users');
+    try {
+      await this.userFacade.createUser(username, email, fullName, password);
+      res.redirect('/users');
+    } catch (error: any) {
+      res.render('users/create', {
+        error: error.message,
+        formData: { username, email, fullName },
+      });
+    }
   });
 }

@@ -1,66 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create User</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100">
-    <div class="container mx-auto px-4 py-8">
-        <div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="px-6 py-4">
-                <h2 class="text-2xl font-bold mb-6">Create New User</h2>
-                <form action="/users/create" method="POST">
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
-                            Username
-                        </label>
-                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="username" name="username" type="text" required>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
-                            Email
-                        </label>
-                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="email" name="email" type="email" required>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="fullName">
-                            Full Name
-                        </label>
-                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="fullName" name="fullName" type="text" required>
-                    </div>
-                    <div class="mb-6">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-                            Password
-                        </label>
-                        <div class="flex gap-2">
-                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="password" name="password" type="text" required>
-                            <button type="button" onclick="generatePassword()"
-                                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                Generate
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            type="submit">
-                            Create User
-                        </button>
-                        <a href="/users"
-                            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                            Cancel
-                        </a>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NIEBIESKIE APARATY | Create User</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #ffffff;
+      --secondary-color: #121212;
+      --accent-color: #f5f5f5;
+      --text-light: #989898;
+      --error-color: #dc3545;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--primary-color);
+      color: var(--secondary-color);
+      letter-spacing: 0.5px;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
 
-    <script src="/js/users.js"></script>
+    .navbar {
+      background-color: var(--secondary-color);
+      padding: 1rem 2rem;
+    }
+
+    .navbar-brand {
+      font-family: 'Italiana', serif;
+      color: var(--primary-color) !important;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+    }
+
+    .nav-link {
+      color: var(--primary-color) !important;
+      letter-spacing: 1px;
+      margin: 0 1rem;
+      transition: opacity 0.3s ease;
+    }
+
+    .nav-link:hover {
+      opacity: 0.8;
+    }
+
+    .content-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background-color: var(--primary-color);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border-radius: 4px;
+    }
+
+    .page-title {
+      font-family: 'Italiana', serif;
+      font-size: 2.5rem;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .page-title::after {
+      content: '';
+      position: absolute;
+      width: 50px;
+      height: 1px;
+      background-color: var(--secondary-color);
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .form-control {
+      border: none;
+      border-bottom: 1px solid #ddd;
+      border-radius: 0;
+      padding: 15px 0;
+      margin-bottom: 20px;
+      font-weight: 300;
+    }
+
+    .form-control:focus {
+      box-shadow: none;
+      border-color: var(--secondary-color);
+    }
+
+    .btn-dark {
+      background-color: var(--secondary-color);
+      border: none;
+      letter-spacing: 2px;
+      padding: 12px 25px;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-dark:hover {
+      background-color: #333;
+    }
+
+    .btn-outline-dark {
+      border: 1px solid var(--secondary-color);
+      color: var(--secondary-color);
+      letter-spacing: 2px;
+      padding: 12px 25px;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-dark:hover {
+      background-color: var(--secondary-color);
+      color: var(--primary-color);
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      color: var(--text-light);
+      font-size: 0.8rem;
+    }
+
+    .alert {
+      border: none;
+      border-radius: 4px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+
+    .alert-danger {
+      background-color: rgba(220, 53, 69, 0.1);
+      color: var(--error-color);
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/api-docs">NIEBIESKIE APARATY</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="/users">Users</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="content-container">
+    <h1 class="page-title">Create User</h1>
+    
+    <% if (error) { %>
+      <div class="alert alert-danger" role="alert">
+        <%= error %>
+      </div>
+    <% } %>
+    
+    <form action="/users/create" method="POST">
+      <div class="mb-3">
+        <input type="text" 
+               class="form-control" 
+               id="username" 
+               name="username" 
+               placeholder="Username" 
+               required
+               value="<%= locals.formData ? formData.username || '' : '' %>">
+      </div>
+      <div class="mb-3">
+        <input type="text" 
+               class="form-control" 
+               id="fullName" 
+               name="fullName" 
+               placeholder="Full Name" 
+               required
+               value="<%= locals.formData ? formData.fullName || '' : '' %>">
+      </div>
+      <div class="mb-3">
+        <input type="email" 
+               class="form-control" 
+               id="email" 
+               name="email" 
+               placeholder="Email (optional)"
+               value="<%= locals.formData ? formData.email || '' : '' %>">
+      </div>
+      <div class="mb-3">
+        <input type="password" 
+               class="form-control" 
+               id="password" 
+               name="password" 
+               placeholder="Password" 
+               required>
+      </div>
+      
+      <div class="d-flex justify-content-between mt-4">
+        <a href="/users" class="btn btn-outline-dark">Back to List</a>
+        <button type="submit" class="btn btn-dark">Create User</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="footer">
+    © 2025 NIEBIESKIE APARATY. All Rights Reserved.
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
