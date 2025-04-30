@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css"/>
   <style>
     :root {
       --primary-color: #ffffff;
@@ -83,13 +84,13 @@
       background-color: var(--accent-color);
       padding: 2rem;
       border-radius: 4px;
-      margin-top: 2rem;
+      margin-bottom: 2rem;
     }
 
     .detail-row {
       display: flex;
       margin-bottom: 1.5rem;
-      align-items: flex-start;
+      align-items: center;
     }
 
     .detail-label {
@@ -98,7 +99,6 @@
       text-transform: uppercase;
       font-size: 0.8rem;
       letter-spacing: 1px;
-      padding-top: 3px;
     }
 
     .detail-value {
@@ -106,23 +106,23 @@
       font-size: 0.9rem;
     }
 
-    .user-section {
+    .image-upload-section {
       margin-top: 2rem;
-      padding-top: 2rem;
-      border-top: 1px solid #ddd;
+      padding: 2rem;
+      background-color: var(--accent-color);
+      border-radius: 4px;
     }
 
-    .section-title {
-      font-family: 'Italiana', serif;
-      font-size: 1.8rem;
-      letter-spacing: 2px;
-      margin-bottom: 1.5rem;
+    .image-preview {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-bottom: 1rem;
     }
 
-    .badge {
-      font-size: 0.7rem;
-      padding: 0.5em 1em;
-      letter-spacing: 1px;
+    .upload-form {
+      margin-top: 1rem;
     }
 
     .btn-dark {
@@ -148,58 +148,35 @@
       font-size: 0.8rem;
     }
 
-    .description-box {
-      background-color: white;
-      padding: 1rem;
-      border-radius: 4px;
-      margin-top: 0.5rem;
-      white-space: pre-wrap;
-    }
-
-    .gallery-info {
-      background-color: white;
-      padding: 1rem;
-      border-radius: 4px;
+    #progressContainer {
       margin-top: 1rem;
+      display: none;
     }
 
-    .gallery-info p {
-      margin: 0;
+    .progress-bar {
+      height: 8px;
+      background-color: #e9ecef;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--secondary-color);
+      transition: width 0.3s ease;
+    }
+
+    .status-message {
+      margin-top: 0.5rem;
       font-size: 0.9rem;
     }
 
-    .placeholder-image {
-      max-width: 100%;
-      height: auto;
-      border-radius: 4px;
-      margin-top: 1rem;
+    .success {
+      color: #198754;
     }
 
-    .event-id {
-      font-family: monospace;
-      background-color: white;
-      padding: 0.5rem;
-      border-radius: 4px;
-      font-size: 0.8rem;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      margin-left: 0.5rem;
-    }
-
-    .status-badge.available {
-      background-color: #198754;
-      color: white;
-    }
-
-    .status-badge.not-available {
-      background-color: #dc3545;
-      color: white;
+    .error {
+      color: #dc3545;
     }
   </style>
 </head>
@@ -228,134 +205,205 @@
 
     <div class="event-details">
       <div class="detail-row">
-        <div class="detail-label">Event ID</div>
-        <div class="detail-value">
-          <code class="event-id"><%= event.eventId %></code>
-        </div>
-      </div>
-
-      <div class="detail-row">
         <div class="detail-label">Title</div>
         <div class="detail-value"><%= event.title %></div>
       </div>
 
       <div class="detail-row">
-        <div class="detail-label">Event Date</div>
-        <div class="detail-value">
-          <%= new Date(event.date).toLocaleDateString('en-US', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          }) %>
-        </div>
+        <div class="detail-label">Date</div>
+        <div class="detail-value"><%= new Date(event.date).toLocaleDateString() %></div>
       </div>
 
       <div class="detail-row">
         <div class="detail-label">Description</div>
-        <div class="detail-value">
-          <div class="description-box">
-            <%= event.description || 'No description provided' %>
-          </div>
-        </div>
+        <div class="detail-value"><%= event.description || 'No description provided' %></div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Username</div>
+        <div class="detail-value"><%= event.username %></div>
       </div>
 
       <div class="detail-row">
         <div class="detail-label">Created At</div>
-        <div class="detail-value">
-          <%= new Date(event.createdAt).toLocaleString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          }) %>
-        </div>
-      </div>
-
-      <div class="detail-row">
-        <div class="detail-label">Image Status</div>
-        <div class="detail-value">
-          <% if (event.imagePlaceholderObjectKey) { %>
-            <span>Image Available</span>
-            <span class="status-badge available">Available</span>
-          <% } else { %>
-            <span>No Image Uploaded</span>
-            <span class="status-badge not-available">Not Available</span>
-          <% } %>
-        </div>
-      </div>
-
-      <% if (event.imagePlaceholderObjectKey) { %>
-        <div class="detail-row">
-          <div class="detail-label">Image Preview</div>
-          <div class="detail-value">
-            <img 
-              src="https://niebieskie-aparaty-client-gallery.s3.eu-central-1.amazonaws.com/<%= event.imagePlaceholderObjectKey %>" 
-              alt="Event placeholder" 
-              class="placeholder-image"
-            >
-            <div class="mt-2">
-              <small class="text-muted">Image Path: <%= event.imagePlaceholderObjectKey %></small>
-            </div>
-          </div>
-        </div>
-      <% } %>
-
-      <div class="detail-row">
-        <div class="detail-label">Gallery Status</div>
-        <div class="detail-value">
-          <% if (event.galleryId) { %>
-            <span>Gallery Available</span>
-            <span class="status-badge available">Available</span>
-            <div class="gallery-info mt-2">
-              <p><strong>Gallery ID:</strong> <%= event.galleryId %></p>
-            </div>
-          <% } else { %>
-            <span>No Gallery Created</span>
-            <span class="status-badge not-available">Not Available</span>
-          <% } %>
-        </div>
+        <div class="detail-value"><%= new Date(event.createdAt).toLocaleString() %></div>
       </div>
     </div>
 
-    <div class="user-section">
-      <h2 class="section-title">User Information</h2>
+    <div class="image-upload-section">
+      <h3 class="mb-4">Event Image</h3>
       
-      <div class="detail-row">
-        <div class="detail-label">Username</div>
-        <div class="detail-value"><%= user.username %></div>
-      </div>
+      <% if (event.imagePlaceholderObjectKey) { %>
+        <img 
+          src="https://niebieskie-aparaty-client-gallery.s3.eu-central-1.amazonaws.com/<%= event.imagePlaceholderObjectKey %>" 
+          alt="Event image" 
+          class="image-preview mb-3"
+        />
+      <% } %>
 
-      <div class="detail-row">
-        <div class="detail-label">Full Name</div>
-        <div class="detail-value"><%= user.fullName %></div>
-      </div>
-
-      <div class="detail-row">
-        <div class="detail-label">Email</div>
-        <div class="detail-value"><%= user.email || '-' %></div>
-      </div>
-
-      <div class="detail-row">
-        <div class="detail-label">Status</div>
-        <div class="detail-value">
-          <span class="badge <%= user.active ? 'bg-success' : 'bg-danger' %>">
-            <%= user.active ? 'Active' : 'Inactive' %>
-          </span>
+      <form id="uploadForm" class="upload-form">
+        <input type="hidden" id="eventId" value="<%= event.eventId %>" />
+        <input type="hidden" id="username" value="<%= event.username %>" />
+        
+        <div class="mb-3">
+          <label for="fileInput" class="form-label">Choose Image</label>
+          <input type="file" id="fileInput" class="form-control" accept="image/*" required />
         </div>
-      </div>
+
+        <div id="progressContainer">
+          <div class="progress-bar">
+            <div id="progressBarFill" class="progress-fill" style="width: 0%"></div>
+          </div>
+          <div id="progressPercentage" class="status-message">0%</div>
+        </div>
+
+        <p id="statusMessage" class="status-message"></p>
+
+        <button type="submit" id="submitButton" class="btn btn-dark">Upload Image</button>
+      </form>
     </div>
 
     <div class="d-flex justify-content-center mt-4">
-      <a href="/users/<%= user.username %>" class="btn btn-dark">Back to User Details</a>
+      <a href="/users/<%= event.username %>" class="btn btn-dark">Back to User</a>
     </div>
   </div>
 
   <div class="footer">
     © 2025 NIEBIESKIE APARATY. All Rights Reserved.
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('uploadForm');
+      const eventId = document.getElementById('eventId').value;
+      const username = document.getElementById('username').value;
+      const fileInput = document.getElementById('fileInput');
+      const submitButton = document.getElementById('submitButton');
+      const progressContainer = document.getElementById('progressContainer');
+      const progressBarFill = document.getElementById('progressBarFill');
+      const progressPercentage = document.getElementById('progressPercentage');
+      const statusMessage = document.getElementById('statusMessage');
+
+      let selectedFile = null;
+
+      fileInput.addEventListener('change', (e) => {
+        selectedFile = e.target.files[0] || null;
+        progressContainer.style.display = 'none';
+        progressBarFill.style.width = '0%';
+        progressPercentage.textContent = '0%';
+        statusMessage.textContent = '';
+        statusMessage.className = 'status-message';
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!selectedFile) {
+          statusMessage.textContent = 'Please select an image file.';
+          statusMessage.className = 'status-message error';
+          return;
+        }
+
+        try {
+          submitButton.disabled = true;
+          submitButton.textContent = 'Uploading...';
+
+          // Request presigned URL
+          const res = await fetch('/api/events/upload-url', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              filename: selectedFile.name,
+              contentType: selectedFile.type,
+              username: username,
+              eventId: eventId
+            }),
+            credentials: 'include'
+          });
+
+          const data = await res.json();
+
+          if (!res.ok || data.error) {
+            throw new Error(data.error || `Failed to get URL: ${res.status}`);
+          }
+
+          const { presignedUrl, key } = data;
+
+          // Show progress
+          progressContainer.style.display = 'block';
+
+          // Upload to S3
+          await uploadFileWithProgress(presignedUrl, selectedFile, (progress) => {
+            progressBarFill.style.width = `${progress}%`;
+            progressPercentage.textContent = `${progress}%`;
+          });
+
+          // Update event with new image key
+          const updateRes = await fetch(`/api/events/${eventId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              imagePlaceholderObjectKey: key
+            }),
+            credentials: 'include'
+          });
+
+          if (!updateRes.ok) {
+            throw new Error('Failed to update event');
+          }
+
+          // Success
+          statusMessage.textContent = 'Image uploaded successfully!';
+          statusMessage.className = 'status-message success';
+          
+          // Reload page to show new image
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+
+        } catch (err) {
+          console.error(err);
+          statusMessage.textContent = err.message;
+          statusMessage.className = 'status-message error';
+          progressContainer.style.display = 'none';
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = 'Upload Image';
+        }
+      });
+
+      function uploadFileWithProgress(url, file, onProgress) {
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) {
+              const percentComplete = Math.round((e.loaded / e.total) * 100);
+              onProgress(percentComplete);
+            }
+          };
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve();
+            } else {
+              reject(new Error(`Upload failed with status ${xhr.status}`));
+            }
+          };
+
+          xhr.onerror = () => reject(new Error('Network error during upload'));
+
+          xhr.open('PUT', url);
+          xhr.setRequestHeader('Content-Type', file.type);
+          xhr.send(file);
+        });
+      }
+    });
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

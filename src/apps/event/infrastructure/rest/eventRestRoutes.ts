@@ -86,6 +86,32 @@ router.get(
 /**
  * @swagger
  * /api/events/{eventId}:
+ *   get:
+ *     summary: Get event details
+ *     description: Get details of a specific event.
+ *     tags:
+ *       - Events
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: eventId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Event details
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Event not found
+ */
+router.get('/:eventId', authenticate, eventRestController.getEventById.bind(eventRestController));
+
+/**
+ * @swagger
+ * /api/events/{eventId}:
  *   put:
  *     summary: Update event image placeholder
  *     description: Update the image placeholder for a specific event.
@@ -120,6 +146,51 @@ router.put(
   '/:eventId',
   authenticate,
   eventRestController.updateEventImagePlaceholder.bind(eventRestController),
+);
+
+/**
+ * @swagger
+ * /api/events/upload-url:
+ *   post:
+ *     summary: Generate presigned URL for image upload
+ *     description: Generate a presigned URL for uploading an event image to S3.
+ *     tags:
+ *       - Events
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               filename:
+ *                 type: string
+ *                 description: The name of the file to upload
+ *               contentType:
+ *                 type: string
+ *                 description: The MIME type of the file
+ *               username:
+ *                 type: string
+ *                 description: The username associated with the event
+ *               eventId:
+ *                 type: string
+ *                 description: The ID of the event
+ *     responses:
+ *       200:
+ *         description: Presigned URL generated successfully
+ *       400:
+ *         description: Missing required parameters
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Failed to generate upload URL
+ */
+router.post(
+  '/upload-url',
+  authenticate,
+  eventRestController.generateUploadUrl.bind(eventRestController),
 );
 
 export default router;
