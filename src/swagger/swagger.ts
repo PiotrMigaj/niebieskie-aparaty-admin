@@ -40,10 +40,10 @@ const swaggerOptions = {
   },
   // Path to the API docs
   apis: [
-    './src/packages/user/userRoutes.ts',
-    './src/packages/event/eventRoutes.ts',
-    './src/packages/file/fileRoutes.ts',
-    './src/packages/auth/authRoutes.ts',
+    './src/apps/user/infrastructure/rest/userRestRoutes.ts',
+    './src/apps/event/eventRoutes.ts',
+    './src/apps/file/fileRoutes.ts',
+    './src/apps/auth/authRoutes.ts',
   ],
 };
 

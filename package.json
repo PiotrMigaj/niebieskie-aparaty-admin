@@ -39,9 +39,11 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "reflect-metadata": "^0.2.1",
     "serve-favicon": "^2.5.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
+    "tsyringe": "^4.8.0",
     "winston": "^3.11.0"
   },
   "devDependencies": {

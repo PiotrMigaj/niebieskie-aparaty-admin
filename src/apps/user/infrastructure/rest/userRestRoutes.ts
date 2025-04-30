@@ -1,8 +1,10 @@
 import express from 'express';
-import { generatePassword, createUser, getAllUsers } from './userController';
-import { authenticate } from '../../middleware/authMiddleware';
+import { UserRestController } from './userRestController';
+import { authenticate } from '../../../../middleware/authMiddleware';
+import { container } from 'tsyringe';
 
 const router = express.Router();
+const userRestController = container.resolve(UserRestController);
 
 /**
  * @swagger
@@ -67,7 +69,7 @@ const router = express.Router();
  *       409:
  *         description: Conflict, username already exists
  */
-router.post('', authenticate, createUser);
+router.post('', authenticate, userRestController.createUser.bind(userRestController));
 
 /**
  * @swagger
@@ -112,7 +114,7 @@ router.post('', authenticate, createUser);
  *       401:
  *         description: Unauthorized, invalid token
  */
-router.get('', authenticate, getAllUsers);
+router.get('', authenticate, userRestController.getAllUsers.bind(userRestController));
 
 /**
  * @swagger
@@ -149,6 +151,10 @@ router.get('', authenticate, getAllUsers);
  *       500:
  *         description: Internal server error
  */
-router.get('/generatePassword', authenticate, generatePassword);
+router.get(
+  '/generatePassword',
+  authenticate,
+  userRestController.generatePassword.bind(userRestController),
+);
 
 export default router;

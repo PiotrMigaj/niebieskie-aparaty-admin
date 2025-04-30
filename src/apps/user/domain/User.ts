@@ -1,11 +1,11 @@
 import { PutCommand, GetCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
-import { dynamoDb } from '../../config/db';
+import { dynamoDb } from '../../../config/db';
 import bcrypt from 'bcrypt';
 
 const TABLE_NAME = 'Users';
 const SALT_ROUNDS = 10;
 
-interface UserDto {
+export interface UserDto {
   username: string;
   email: string;
   fullName: string;

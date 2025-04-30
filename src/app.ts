@@ -10,13 +10,17 @@ import flash from 'connect-flash';
 import { Request, Response } from 'express';
 import favicon from 'serve-favicon';
 
+// Import container
+import './container';
+
 // Import routes
-import adminAuthRoutes from './packages/admin/adminAuthRoutes';
-import userRoutes from './packages/user/userRoutes';
-import eventRoutes from './packages/event/eventRoutes';
-import fileRoutes from './packages/file/fileRoutes';
-import authRoutes from './packages/auth/authRoutes';
-import uploadRoutes from './packages/upload/uploadRoutes';
+import adminAuthRoutes from './apps/admin/adminAuthRoutes';
+import userRestRoutes from './apps/user/infrastructure/rest/userRestRoutes';
+import userRoutes from './apps/user/infrastructure/mvc/userRoutes';
+import eventRoutes from './apps/event/eventRoutes';
+import fileRoutes from './apps/file/fileRoutes';
+import authRoutes from './apps/auth/authRoutes';
+import uploadRoutes from './apps/upload/uploadRoutes';
 
 // Import middleware
 import { errorHandler } from './middleware/errorMiddleware';
@@ -84,7 +88,7 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
+      scriptSrc: ["'self'", 'https://cdn.jsdelivr.net'],
       // styleSrc: ["'self'", 'https:'], // Allow CDN styles if needed
       connectSrc: [
         "'self'",
@@ -107,11 +111,14 @@ app.get('/', (req, res) => {
 
 // API Routes
 app.use('', adminAuthRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/users', userRestRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/upload', uploadRoutes);
+
+// MVC Routes
+app.use('/users', userRoutes);
 
 // Swagger Documentation
 // Serve the static swagger files first

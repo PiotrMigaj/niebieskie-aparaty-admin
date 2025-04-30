@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
-import { User } from '../user/User';
+import { User } from '../user/domain/User';
 import { Event } from './Event';
 import { File } from '../file/File';
 import { createAppError } from '../../middleware/errorMiddleware';
