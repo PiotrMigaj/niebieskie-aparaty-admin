@@ -18,6 +18,7 @@ import adminAuthRoutes from './apps/admin/adminAuthRoutes';
 import userRestRoutes from './apps/user/infrastructure/rest/userRestRoutes';
 import userRoutes from './apps/user/infrastructure/mvc/userRoutes';
 import eventRestRoutes from './apps/event/infrastructure/rest/eventRestRoutes';
+import eventRoutes from './apps/event/infrastructure/mvc/eventRoutes';
 import fileRoutes from './apps/file/fileRoutes';
 import authRoutes from './apps/auth/authRoutes';
 import uploadRoutes from './apps/upload/uploadRoutes';
@@ -119,6 +120,7 @@ app.use('/upload', uploadRoutes);
 
 // MVC Routes
 app.use('/users', userRoutes);
+app.use('/events', eventRoutes);
 
 // Swagger Documentation
 // Serve the static swagger files first

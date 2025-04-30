@@ -7,7 +7,9 @@ import { EventFacade } from '../../../event/domain/EventFacade';
 @injectable()
 export class UserController {
   constructor(
+    // eslint-disable-next-line no-unused-vars
     @inject('UserFacade') private userFacade: UserFacade,
+    // eslint-disable-next-line no-unused-vars
     @inject('EventFacade') private eventFacade: EventFacade,
   ) {}
 

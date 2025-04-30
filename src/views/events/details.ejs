@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NIEBIESKIE APARATY | Event Details</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #ffffff;
+      --secondary-color: #121212;
+      --accent-color: #f5f5f5;
+      --text-light: #989898;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--primary-color);
+      color: var(--secondary-color);
+      letter-spacing: 0.5px;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    .navbar {
+      background-color: var(--secondary-color);
+      padding: 1rem 2rem;
+    }
+
+    .navbar-brand {
+      font-family: 'Italiana', serif;
+      color: var(--primary-color) !important;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+    }
+
+    .nav-link {
+      color: var(--primary-color) !important;
+      letter-spacing: 1px;
+      margin: 0 1rem;
+      transition: opacity 0.3s ease;
+    }
+
+    .nav-link:hover {
+      opacity: 0.8;
+    }
+
+    .content-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background-color: var(--primary-color);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border-radius: 4px;
+    }
+
+    .page-title {
+      font-family: 'Italiana', serif;
+      font-size: 2.5rem;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .page-title::after {
+      content: '';
+      position: absolute;
+      width: 50px;
+      height: 1px;
+      background-color: var(--secondary-color);
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .event-details {
+      background-color: var(--accent-color);
+      padding: 2rem;
+      border-radius: 4px;
+      margin-top: 2rem;
+    }
+
+    .detail-row {
+      display: flex;
+      margin-bottom: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .detail-label {
+      width: 150px;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      padding-top: 3px;
+    }
+
+    .detail-value {
+      flex: 1;
+      font-size: 0.9rem;
+    }
+
+    .user-section {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid #ddd;
+    }
+
+    .section-title {
+      font-family: 'Italiana', serif;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      padding: 0.5em 1em;
+      letter-spacing: 1px;
+    }
+
+    .btn-dark {
+      background-color: var(--secondary-color);
+      border: none;
+      letter-spacing: 2px;
+      padding: 12px 25px;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-dark:hover {
+      background-color: #333;
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      color: var(--text-light);
+      font-size: 0.8rem;
+    }
+
+    .description-box {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+      white-space: pre-wrap;
+    }
+
+    .gallery-info {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-top: 1rem;
+    }
+
+    .gallery-info p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .placeholder-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      margin-top: 1rem;
+    }
+
+    .event-id {
+      font-family: monospace;
+      background-color: white;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-left: 0.5rem;
+    }
+
+    .status-badge.available {
+      background-color: #198754;
+      color: white;
+    }
+
+    .status-badge.not-available {
+      background-color: #dc3545;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/api-docs">NIEBIESKIE APARATY</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="/users">Users</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="content-container">
+    <h1 class="page-title">Event Details</h1>
+
+    <div class="event-details">
+      <div class="detail-row">
+        <div class="detail-label">Event ID</div>
+        <div class="detail-value">
+          <code class="event-id"><%= event.eventId %></code>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Title</div>
+        <div class="detail-value"><%= event.title %></div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Event Date</div>
+        <div class="detail-value">
+          <%= new Date(event.date).toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          }) %>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Description</div>
+        <div class="detail-value">
+          <div class="description-box">
+            <%= event.description || 'No description provided' %>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Created At</div>
+        <div class="detail-value">
+          <%= new Date(event.createdAt).toLocaleString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          }) %>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Image Status</div>
+        <div class="detail-value">
+          <% if (event.imagePlaceholderObjectKey) { %>
+            <span>Image Available</span>
+            <span class="status-badge available">Available</span>
+          <% } else { %>
+            <span>No Image Uploaded</span>
+            <span class="status-badge not-available">Not Available</span>
+          <% } %>
+        </div>
+      </div>
+
+      <% if (event.imagePlaceholderObjectKey) { %>
+        <div class="detail-row">
+          <div class="detail-label">Image Preview</div>
+          <div class="detail-value">
+            <img 
+              src="https://niebieskie-aparaty-client-gallery.s3.eu-central-1.amazonaws.com/<%= event.imagePlaceholderObjectKey %>" 
+              alt="Event placeholder" 
+              class="placeholder-image"
+            >
+            <div class="mt-2">
+              <small class="text-muted">Image Path: <%= event.imagePlaceholderObjectKey %></small>
+            </div>
+          </div>
+        </div>
+      <% } %>
+
+      <div class="detail-row">
+        <div class="detail-label">Gallery Status</div>
+        <div class="detail-value">
+          <% if (event.galleryId) { %>
+            <span>Gallery Available</span>
+            <span class="status-badge available">Available</span>
+            <div class="gallery-info mt-2">
+              <p><strong>Gallery ID:</strong> <%= event.galleryId %></p>
+            </div>
+          <% } else { %>
+            <span>No Gallery Created</span>
+            <span class="status-badge not-available">Not Available</span>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <div class="user-section">
+      <h2 class="section-title">User Information</h2>
+      
+      <div class="detail-row">
+        <div class="detail-label">Username</div>
+        <div class="detail-value"><%= user.username %></div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Full Name</div>
+        <div class="detail-value"><%= user.fullName %></div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Email</div>
+        <div class="detail-value"><%= user.email || '-' %></div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Status</div>
+        <div class="detail-value">
+          <span class="badge <%= user.active ? 'bg-success' : 'bg-danger' %>">
+            <%= user.active ? 'Active' : 'Inactive' %>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-center mt-4">
+      <a href="/users/<%= user.username %>" class="btn btn-dark">Back to User Details</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    © 2025 NIEBIESKIE APARATY. All Rights Reserved.
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
