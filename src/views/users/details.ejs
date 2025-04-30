@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NIEBIESKIE APARATY | Event Details</title>
+  <title>NIEBIESKIE APARATY | User Details</title>
   <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css"/>
   <style>
     :root {
       --primary-color: #ffffff;
@@ -80,7 +79,7 @@
       transform: translateX(-50%);
     }
 
-    .event-details {
+    .user-details {
       background-color: var(--accent-color);
       padding: 2rem;
       border-radius: 4px;
@@ -106,23 +105,22 @@
       font-size: 0.9rem;
     }
 
-    .image-upload-section {
-      margin-top: 2rem;
-      padding: 2rem;
-      background-color: var(--accent-color);
-      border-radius: 4px;
+    .events-section {
+      margin-top: 3rem;
     }
 
-    .image-preview {
-      width: 100%;
-      max-height: 300px;
-      object-fit: cover;
-      border-radius: 4px;
-      margin-bottom: 1rem;
+    .events-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
     }
 
-    .upload-form {
-      margin-top: 1rem;
+    .events-title {
+      font-family: 'Italiana', serif;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      margin: 0;
     }
 
     .btn-dark {
@@ -139,6 +137,25 @@
       background-color: #333;
     }
 
+    .event-card {
+      background-color: var(--accent-color);
+      padding: 1.5rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+
+    .event-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .event-info {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-bottom: 1rem;
+    }
+
     .footer {
       position: fixed;
       bottom: 20px;
@@ -148,35 +165,10 @@
       font-size: 0.8rem;
     }
 
-    #progressContainer {
-      margin-top: 1rem;
-      display: none;
-    }
-
-    .progress-bar {
-      height: 8px;
-      background-color: #e9ecef;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background-color: var(--secondary-color);
-      transition: width 0.3s ease;
-    }
-
-    .status-message {
-      margin-top: 0.5rem;
-      font-size: 0.9rem;
-    }
-
-    .success {
-      color: #198754;
-    }
-
-    .error {
-      color: #dc3545;
+    .badge {
+      font-size: 0.7rem;
+      padding: 0.5em 1em;
+      letter-spacing: 1px;
     }
   </style>
 </head>
@@ -201,209 +193,79 @@
   </nav>
 
   <div class="content-container">
-    <h1 class="page-title">Event Details</h1>
+    <h1 class="page-title">User Details</h1>
 
-    <div class="event-details">
-      <div class="detail-row">
-        <div class="detail-label">Title</div>
-        <div class="detail-value"><%= event.title %></div>
-      </div>
-
-      <div class="detail-row">
-        <div class="detail-label">Date</div>
-        <div class="detail-value"><%= new Date(event.date).toLocaleDateString() %></div>
-      </div>
-
-      <div class="detail-row">
-        <div class="detail-label">Description</div>
-        <div class="detail-value"><%= event.description || 'No description provided' %></div>
-      </div>
-
+    <div class="user-details">
       <div class="detail-row">
         <div class="detail-label">Username</div>
-        <div class="detail-value"><%= event.username %></div>
+        <div class="detail-value"><%= user.username %></div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Full Name</div>
+        <div class="detail-value"><%= user.fullName %></div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Email</div>
+        <div class="detail-value"><%= user.email || 'Not provided' %></div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Role</div>
+        <div class="detail-value">
+          <span class="badge <%= user.role === 'ADMIN' ? 'bg-danger' : 'bg-success' %>">
+            <%= user.role %>
+          </span>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Status</div>
+        <div class="detail-value">
+          <span class="badge <%= user.active ? 'bg-success' : 'bg-danger' %>">
+            <%= user.active ? 'Active' : 'Inactive' %>
+          </span>
+        </div>
       </div>
 
       <div class="detail-row">
         <div class="detail-label">Created At</div>
-        <div class="detail-value"><%= new Date(event.createdAt).toLocaleString() %></div>
+        <div class="detail-value"><%= new Date(user.createdAt).toLocaleString() %></div>
       </div>
     </div>
 
-    <div class="image-upload-section">
-      <h3 class="mb-4">Event Image</h3>
-      
-      <% if (event.imagePlaceholderObjectKey) { %>
-        <img 
-          src="https://niebieskie-aparaty-client-gallery.s3.eu-central-1.amazonaws.com/<%= event.imagePlaceholderObjectKey %>" 
-          alt="Event image" 
-          class="image-preview mb-3"
-        />
-      <% } %>
+    <div class="events-section">
+      <div class="events-header">
+        <h2 class="events-title">Events</h2>
+        <a href="/users/<%= user.username %>/events/create" class="btn btn-dark">Create Event</a>
+      </div>
 
-      <form id="uploadForm" class="upload-form">
-        <input type="hidden" id="eventId" value="<%= event.eventId %>" />
-        <input type="hidden" id="username" value="<%= event.username %>" />
-        
-        <div class="mb-3">
-          <label for="fileInput" class="form-label">Choose Image</label>
-          <input type="file" id="fileInput" class="form-control" accept="image/*" required />
-        </div>
-
-        <div id="progressContainer">
-          <div class="progress-bar">
-            <div id="progressBarFill" class="progress-fill" style="width: 0%"></div>
+      <% if (events && events.length > 0) { %>
+        <% events.forEach(event => { %>
+          <div class="event-card">
+            <h3 class="event-title"><%= event.title %></h3>
+            <div class="event-info">
+              <p><strong>Date:</strong> <%= new Date(event.date).toLocaleDateString() %></p>
+              <p><strong>Description:</strong> <%= event.description || 'No description provided' %></p>
+              <p><strong>Created:</strong> <%= new Date(event.createdAt).toLocaleString() %></p>
+            </div>
+            <a href="/events/<%= event.eventId %>" class="btn btn-dark btn-sm">View Details</a>
           </div>
-          <div id="progressPercentage" class="status-message">0%</div>
-        </div>
-
-        <p id="statusMessage" class="status-message"></p>
-
-        <button type="submit" id="submitButton" class="btn btn-dark">Upload Image</button>
-      </form>
+        <% }); %>
+      <% } else { %>
+        <p class="text-center text-muted">No events found for this user.</p>
+      <% } %>
     </div>
 
     <div class="d-flex justify-content-center mt-4">
-      <a href="/users/<%= event.username %>" class="btn btn-dark">Back to User</a>
+      <a href="/users" class="btn btn-dark">Back to Users List</a>
     </div>
   </div>
 
   <div class="footer">
     © 2025 NIEBIESKIE APARATY. All Rights Reserved.
   </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('uploadForm');
-      const eventId = document.getElementById('eventId').value;
-      const username = document.getElementById('username').value;
-      const fileInput = document.getElementById('fileInput');
-      const submitButton = document.getElementById('submitButton');
-      const progressContainer = document.getElementById('progressContainer');
-      const progressBarFill = document.getElementById('progressBarFill');
-      const progressPercentage = document.getElementById('progressPercentage');
-      const statusMessage = document.getElementById('statusMessage');
-
-      let selectedFile = null;
-
-      fileInput.addEventListener('change', (e) => {
-        selectedFile = e.target.files[0] || null;
-        progressContainer.style.display = 'none';
-        progressBarFill.style.width = '0%';
-        progressPercentage.textContent = '0%';
-        statusMessage.textContent = '';
-        statusMessage.className = 'status-message';
-      });
-
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        if (!selectedFile) {
-          statusMessage.textContent = 'Please select an image file.';
-          statusMessage.className = 'status-message error';
-          return;
-        }
-
-        try {
-          submitButton.disabled = true;
-          submitButton.textContent = 'Uploading...';
-
-          // Request presigned URL
-          const res = await fetch('/api/events/upload-url', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              filename: selectedFile.name,
-              contentType: selectedFile.type,
-              username: username,
-              eventId: eventId
-            }),
-            credentials: 'include'
-          });
-
-          const data = await res.json();
-
-          if (!res.ok || data.error) {
-            throw new Error(data.error || `Failed to get URL: ${res.status}`);
-          }
-
-          const { presignedUrl, key } = data;
-
-          // Show progress
-          progressContainer.style.display = 'block';
-
-          // Upload to S3
-          await uploadFileWithProgress(presignedUrl, selectedFile, (progress) => {
-            progressBarFill.style.width = `${progress}%`;
-            progressPercentage.textContent = `${progress}%`;
-          });
-
-          // Update event with new image key
-          const updateRes = await fetch(`/api/events/${eventId}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              imagePlaceholderObjectKey: key
-            }),
-            credentials: 'include'
-          });
-
-          if (!updateRes.ok) {
-            throw new Error('Failed to update event');
-          }
-
-          // Success
-          statusMessage.textContent = 'Image uploaded successfully!';
-          statusMessage.className = 'status-message success';
-          
-          // Reload page to show new image
-          setTimeout(() => {
-            window.location.reload();
-          }, 1500);
-
-        } catch (err) {
-          console.error(err);
-          statusMessage.textContent = err.message;
-          statusMessage.className = 'status-message error';
-          progressContainer.style.display = 'none';
-        } finally {
-          submitButton.disabled = false;
-          submitButton.textContent = 'Upload Image';
-        }
-      });
-
-      function uploadFileWithProgress(url, file, onProgress) {
-        return new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          
-          xhr.upload.onprogress = (e) => {
-            if (e.lengthComputable) {
-              const percentComplete = Math.round((e.loaded / e.total) * 100);
-              onProgress(percentComplete);
-            }
-          };
-
-          xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              resolve();
-            } else {
-              reject(new Error(`Upload failed with status ${xhr.status}`));
-            }
-          };
-
-          xhr.onerror = () => reject(new Error('Network error during upload'));
-
-          xhr.open('PUT', url);
-          xhr.setRequestHeader('Content-Type', file.type);
-          xhr.send(file);
-        });
-      }
-    });
-  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

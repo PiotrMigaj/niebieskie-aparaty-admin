@@ -2,6 +2,7 @@ import express from 'express';
 import { EventRestController } from './eventRestController';
 import { authenticate } from '../../../../middleware/authMiddleware';
 import { container } from 'tsyringe';
+import ensureAdminSession from '../../../../middleware/adminAuthMiddleware';
 
 const router = express.Router();
 const eventRestController = container.resolve(EventRestController);
@@ -144,7 +145,7 @@ router.get('/:eventId', authenticate, eventRestController.getEventById.bind(even
  */
 router.put(
   '/:eventId',
-  authenticate,
+  ensureAdminSession,
   eventRestController.updateEventImagePlaceholder.bind(eventRestController),
 );
 
@@ -189,7 +190,7 @@ router.put(
  */
 router.post(
   '/upload-url',
-  authenticate,
+  ensureAdminSession,
   eventRestController.generateUploadUrl.bind(eventRestController),
 );
 

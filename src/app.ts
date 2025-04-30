@@ -90,13 +90,18 @@ app.use(
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", 'https://cdn.jsdelivr.net'],
-      // styleSrc: ["'self'", 'https:'], // Allow CDN styles if needed
+      styleSrc: [
+        "'self'",
+        'https://cdn.jsdelivr.net',
+        'https://fonts.googleapis.com',
+        "'unsafe-inline'",
+      ],
       connectSrc: [
         "'self'",
-        'https://niebieskie-aparaty-client-gallery.s3.eu-central-1.amazonaws.com', // ✅ allow uploads
+        'https://niebieskie-aparaty-client-gallery.s3.eu-central-1.amazonaws.com',
       ],
       imgSrc: ["'self'", 'data:', 'https:'],
-      fontSrc: ["'self'", 'https:'],
+      fontSrc: ["'self'", 'https:', 'data:'],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: [],
     },
