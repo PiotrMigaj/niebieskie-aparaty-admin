@@ -37,4 +37,17 @@ export class UserFacadeImpl implements UserFacade {
     const users = await User.findAll();
     return users.map((user) => user.toResponse());
   }
+
+  async getUserByUsername(username: string): Promise<UserDto | null> {
+    const user = await User.findByUsername(username);
+    return user ? user.toResponse() : null;
+  }
+
+  async deleteUser(username: string): Promise<void> {
+    const userExists = await User.existsByUsername(username);
+    if (!userExists) {
+      throw createAppError(404, 'User not found');
+    }
+    await User.deleteByUsername(username);
+  }
 }

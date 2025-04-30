@@ -1,32 +1,43 @@
-import { PutCommand, ScanCommand, GetCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
-import { dynamoDb } from '../../config/db';
+import {
+  PutCommand,
+  ScanCommand,
+  GetCommand,
+  UpdateCommand,
+  DeleteCommand,
+} from '@aws-sdk/lib-dynamodb';
+import { dynamoDb } from '../../../config/db';
 import { v4 as uuidv4 } from 'uuid';
+import { createAppError } from '../../../middleware/errorMiddleware';
 
 const TABLE_NAME = 'Events';
 
 export interface EventDto {
   eventId: string;
   createdAt: Date;
-  date: string; // ISO date string (YYYY-MM-DD)
+  date: string;
   description: string;
   title: string;
   username: string;
   imagePlaceholderObjectKey: string | null;
+  galleryId: string | null;
 }
 
 export class Event {
   private eventId: string;
   private createdAt: Date;
+  private galleryId: string | null;
 
   constructor(
-    private date: string, // format: YYYY-MM-DD
+    private date: string,
     private description: string,
     private title: string,
     private username: string,
     private imagePlaceholderObjectKey: string | null = null,
+    galleryId: string | null = null,
   ) {
     this.eventId = uuidv4();
     this.createdAt = new Date();
+    this.galleryId = galleryId;
   }
 
   async save(): Promise<Event> {
@@ -40,6 +51,7 @@ export class Event {
         title: this.title,
         username: this.username,
         imagePlaceholderObjectKey: this.imagePlaceholderObjectKey,
+        galleryId: this.galleryId,
       },
     });
     await dynamoDb.send(command);
@@ -49,7 +61,7 @@ export class Event {
   static async findByUsername(username: string): Promise<Event[]> {
     const command = new ScanCommand({
       TableName: TABLE_NAME,
-      FilterExpression: 'username = :username', // Filter by username
+      FilterExpression: 'username = :username',
       ExpressionAttributeValues: {
         ':username': username,
       },
@@ -62,11 +74,35 @@ export class Event {
         item.title,
         item.username,
         item.imagePlaceholderObjectKey,
+        item.galleryId,
       );
       event.eventId = item.eventId;
       event.createdAt = new Date(item.createdAt);
       return event;
     });
+  }
+
+  static async findById(eventId: string): Promise<Event | null> {
+    const command = new GetCommand({
+      TableName: TABLE_NAME,
+      Key: {
+        eventId: eventId,
+      },
+    });
+    const { Item } = await dynamoDb.send(command);
+    if (!Item) return null;
+
+    const event = new Event(
+      Item.date,
+      Item.description,
+      Item.title,
+      Item.username,
+      Item.imagePlaceholderObjectKey,
+      Item.galleryId,
+    );
+    event.eventId = Item.eventId;
+    event.createdAt = new Date(Item.createdAt);
+    return event;
   }
 
   static async existsById(eventId: string): Promise<boolean> {
@@ -77,7 +113,17 @@ export class Event {
       },
     });
     const { Item } = await dynamoDb.send(command);
-    return !!Item; // Returns true if the item exists, false otherwise
+    return !!Item;
+  }
+
+  static async deleteById(eventId: string): Promise<void> {
+    const command = new DeleteCommand({
+      TableName: TABLE_NAME,
+      Key: {
+        eventId: eventId,
+      },
+    });
+    await dynamoDb.send(command);
   }
 
   static async updateImagePlaceholderObjectKey(
@@ -91,7 +137,7 @@ export class Event {
       ExpressionAttributeValues: {
         ':newKey': newKey,
       },
-      ConditionExpression: 'attribute_exists(eventId)', // Optional: only update if item exists
+      ConditionExpression: 'attribute_exists(eventId)',
     });
 
     await dynamoDb.send(command);
@@ -106,6 +152,7 @@ export class Event {
       title: this.title,
       username: this.username,
       imagePlaceholderObjectKey: this.imagePlaceholderObjectKey,
+      galleryId: this.galleryId,
     };
   }
 

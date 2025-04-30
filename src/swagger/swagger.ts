@@ -41,7 +41,7 @@ const swaggerOptions = {
   // Path to the API docs
   apis: [
     './src/apps/user/infrastructure/rest/userRestRoutes.ts',
-    './src/apps/event/eventRoutes.ts',
+    './src/apps/event/infrastructure/rest/eventRestRoutes.ts',
     './src/apps/file/fileRoutes.ts',
     './src/apps/auth/authRoutes.ts',
   ],

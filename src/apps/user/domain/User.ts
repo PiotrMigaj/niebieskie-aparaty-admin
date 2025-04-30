@@ -1,4 +1,4 @@
-import { PutCommand, GetCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { PutCommand, GetCommand, ScanCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
 import { dynamoDb } from '../../../config/db';
 import bcrypt from 'bcrypt';
 
@@ -68,6 +68,23 @@ export class User {
     return !!Item;
   }
 
+  static async findByUsername(username: string): Promise<User | null> {
+    const command = new GetCommand({
+      TableName: TABLE_NAME,
+      Key: {
+        username: username,
+      },
+    });
+    const { Item } = await dynamoDb.send(command);
+    if (!Item) return null;
+
+    const user = new User(Item.username, Item.email, Item.fullName, Item.password);
+    user.createdAt = new Date(Item.createdAt);
+    user.role = Item.role;
+    user.active = Item.active;
+    return user;
+  }
+
   static async findAll(): Promise<User[]> {
     const command = new ScanCommand({
       TableName: TABLE_NAME,
@@ -80,6 +97,16 @@ export class User {
       user.active = item.active;
       return user;
     });
+  }
+
+  static async deleteByUsername(username: string): Promise<void> {
+    const command = new DeleteCommand({
+      TableName: TABLE_NAME,
+      Key: {
+        username: username,
+      },
+    });
+    await dynamoDb.send(command);
   }
 
   toResponse(): UserDto {

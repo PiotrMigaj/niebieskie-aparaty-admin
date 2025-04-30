@@ -17,7 +17,7 @@ import './container';
 import adminAuthRoutes from './apps/admin/adminAuthRoutes';
 import userRestRoutes from './apps/user/infrastructure/rest/userRestRoutes';
 import userRoutes from './apps/user/infrastructure/mvc/userRoutes';
-import eventRoutes from './apps/event/eventRoutes';
+import eventRestRoutes from './apps/event/infrastructure/rest/eventRestRoutes';
 import fileRoutes from './apps/file/fileRoutes';
 import authRoutes from './apps/auth/authRoutes';
 import uploadRoutes from './apps/upload/uploadRoutes';
@@ -112,7 +112,7 @@ app.get('/', (req, res) => {
 // API Routes
 app.use('', adminAuthRoutes);
 app.use('/api/users', userRestRoutes);
-app.use('/api/events', eventRoutes);
+app.use('/api/events', eventRestRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/upload', uploadRoutes);

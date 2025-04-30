@@ -93,6 +93,29 @@
       background-color: #333;
     }
 
+    .btn-outline-dark {
+      border: 1px solid var(--secondary-color);
+      color: var(--secondary-color);
+      letter-spacing: 1px;
+      padding: 8px 15px;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-dark:hover {
+      background-color: var(--secondary-color);
+      color: var(--primary-color);
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      border: none;
+      letter-spacing: 1px;
+      padding: 8px 15px;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
     .table {
       margin-top: 2rem;
     }
@@ -125,6 +148,29 @@
 
     .table td {
       vertical-align: middle;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .modal-content {
+      border-radius: 4px;
+    }
+
+    .modal-header {
+      border-bottom: none;
+      padding: 2rem 2rem 1rem;
+    }
+
+    .modal-body {
+      padding: 1rem 2rem;
+    }
+
+    .modal-footer {
+      border-top: none;
+      padding: 1rem 2rem 2rem;
     }
   </style>
 </head>
@@ -165,6 +211,7 @@
             <th>Role</th>
             <th>Status</th>
             <th>Created At</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -185,11 +232,43 @@
                   </span>
                 </td>
                 <td><%= new Date(user.createdAt).toLocaleDateString() %></td>
+                <td>
+                  <div class="action-buttons">
+                    <a href="/users/<%= user.username %>" class="btn btn-outline-dark btn-sm">Details</a>
+                    <button 
+                      class="btn btn-danger btn-sm" 
+                      data-bs-toggle="modal" 
+                      data-bs-target="#deleteModal<%= user.username %>">
+                      Delete
+                    </button>
+                  </div>
+
+                  <!-- Delete Modal -->
+                  <div class="modal fade" id="deleteModal<%= user.username %>" tabindex="-1">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Confirm Delete</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                          Are you sure you want to delete user "<%= user.username %>"?
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>
+                          <form action="/users/<%= user.username %>/delete" method="POST" style="display: inline;">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
               </tr>
             <% }); %>
           <% } else { %>
             <tr>
-              <td colspan="6" class="text-center">No users found</td>
+              <td colspan="7" class="text-center">No users found</td>
             </tr>
           <% } %>
         </tbody>
