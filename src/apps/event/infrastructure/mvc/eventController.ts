@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { EventFacade } from '../../domain/EventFacade';
 import { UserFacade } from '../../../user/domain/UserFacade';
+import { FileFacade } from '../../../file/domain/FileFacade';
 import { injectable, inject } from 'tsyringe';
 import { createAppError } from '../../../../middleware/errorMiddleware';
 import { generatePresignedUrlForObjectKey } from '../../../../utils/s3';
@@ -12,6 +13,7 @@ export class EventController {
   constructor(
     @inject('EventFacade') private readonly eventFacade: EventFacade,
     @inject('UserFacade') private readonly userFacade: UserFacade,
+    @inject('FileFacade') private readonly fileFacade: FileFacade,
   ) {}
 
   getEventDetails = asyncHandler(async (req: Request, res: Response) => {
@@ -37,6 +39,13 @@ export class EventController {
       }
     }
 
-    res.render('events/details', { event: { ...event, signedImageUrl }, user });
-  });
+    const files = await this.fileFacade.getFilesByUsername(event.username);
+    const eventFiles = files.filter(file => file.eventId === event.eventId);
+
+    res.render('events/details', { 
+      event: { ...event, signedImageUrl }, 
+      user,
+      files: eventFiles
+    });
+  }
 }

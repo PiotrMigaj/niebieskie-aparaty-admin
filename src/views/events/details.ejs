@@ -200,6 +200,53 @@
       color: #6c757d;
       font-size: 1.1rem;
     }
+
+    .files-section {
+      margin-top: 3rem;
+      background-color: var(--accent-color);
+      padding: 2rem;
+      border-radius: 4px;
+    }
+
+    .files-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .files-title {
+      font-family: 'Italiana', serif;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      margin: 0;
+    }
+
+    .file-card {
+      background-color: white;
+      padding: 1.5rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .file-description {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .file-info {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .no-files {
+      text-align: center;
+      color: var(--text-light);
+      padding: 2rem;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
@@ -287,6 +334,31 @@
 
         <button type="submit" id="submitButton" class="btn btn-dark">Upload Image</button>
       </form>
+    </div>
+
+    <div class="files-section">
+      <div class="files-header">
+        <h3 class="files-title">Files</h3>
+        <a href="/files/upload/<%= event.eventId %>" class="btn btn-dark">Add File</a>
+      </div>
+
+      <% if (files && files.length > 0) { %>
+        <% files.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(file => { %>
+          <div class="file-card">
+            <div class="file-description"><%= file.description %></div>
+            <div class="file-info">
+              <div>Uploaded: <%= new Date(file.createdAt).toLocaleString() %></div>
+              <% if (file.dateOfLastDownload) { %>
+                <div>Last downloaded: <%= new Date(file.dateOfLastDownload).toLocaleString() %></div>
+              <% } %>
+            </div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="no-files">
+          <p>No files have been uploaded yet.</p>
+        </div>
+      <% } %>
     </div>
 
     <div class="d-flex justify-content-center mt-4">
