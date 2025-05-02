@@ -10,7 +10,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css"/>
   <style>
     :root {
       --primary-color: #ffffff;
@@ -80,6 +79,26 @@
       transform: translateX(-50%);
     }
 
+    .detail-row {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      align-items: start;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      color: var(--text-light);
+    }
+
+    .detail-value {
+      font-size: 0.95rem;
+    }
+
     .event-details {
       background-color: var(--accent-color);
       padding: 2rem;
@@ -96,6 +115,7 @@
       font-size: 0.9rem;
       user-select: all;
       cursor: pointer;
+      display: inline-block;
     }
 
     .image-upload-section {
@@ -257,6 +277,22 @@
       background-color: #ffc107;
       color: #000;
     }
+
+    .section-title {
+      font-family: 'Italiana', serif;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+    }
+
+    .gallery-status {
+      margin-bottom: 0.5rem;
+    }
+
+    .gallery-id {
+      margin-top: 0.5rem;
+      margin-left: 0;
+    }
   </style>
 </head>
 <body>
@@ -283,6 +319,8 @@
     <h1 class="page-title">Event Details</h1>
 
     <div class="event-details">
+      <h3 class="section-title">Basic Information</h3>
+      
       <div class="detail-row">
         <div class="detail-label">Event ID</div>
         <div class="detail-value">
@@ -320,20 +358,26 @@
       <div class="detail-row">
         <div class="detail-label">Gallery Status</div>
         <div class="detail-value">
+          <div class="gallery-status">
+            <% if (event.galleryId) { %>
+              <span class="badge badge-success">Gallery Available</span>
+            <% } else { %>
+              <span class="badge badge-warning">No Gallery Created</span>
+            <% } %>
+          </div>
           <% if (event.galleryId) { %>
-            <span class="badge badge-success">Gallery Available</span>
-            <code class="event-id ms-2" onclick="navigator.clipboard.writeText(this.textContent)" title="Click to copy">
-              <%= event.galleryId %>
-            </code>
-          <% } else { %>
-            <span class="badge badge-warning">No Gallery Created</span>
+            <div class="gallery-id">
+              <code class="event-id" onclick="navigator.clipboard.writeText(this.textContent)" title="Click to copy">
+                <%= event.galleryId %>
+              </code>
+            </div>
           <% } %>
         </div>
       </div>
     </div>
 
     <div class="image-upload-section">
-      <h3 class="mb-4">Event Gallery</h3>
+      <h3 class="section-title">Event Gallery</h3>
       
       <% if (event.imagePlaceholderObjectKey && event.signedImageUrl) { %>
         <img 
@@ -371,7 +415,7 @@
 
     <div class="files-section">
       <div class="files-header">
-        <h3 class="files-title">Files</h3>
+        <h3 class="section-title">Files</h3>
         <a href="/files/upload/<%= event.eventId %>" class="btn btn-dark">Add File</a>
       </div>
 
