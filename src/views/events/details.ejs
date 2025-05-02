@@ -87,23 +87,15 @@
       margin-bottom: 2rem;
     }
 
-    .detail-row {
-      display: flex;
-      margin-bottom: 1.5rem;
-      align-items: center;
-    }
-
-    .detail-label {
-      width: 150px;
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      letter-spacing: 1px;
-    }
-
-    .detail-value {
-      flex: 1;
+    .event-id {
+      font-family: monospace;
+      background-color: var(--secondary-color);
+      color: var(--primary-color);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
       font-size: 0.9rem;
+      user-select: all;
+      cursor: pointer;
     }
 
     .image-upload-section {
@@ -247,6 +239,24 @@
       padding: 2rem;
       font-style: italic;
     }
+
+    .badge {
+      padding: 0.5em 1em;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      border-radius: 4px;
+    }
+
+    .badge-success {
+      background-color: #198754;
+      color: white;
+    }
+
+    .badge-warning {
+      background-color: #ffc107;
+      color: #000;
+    }
   </style>
 </head>
 <body>
@@ -274,6 +284,15 @@
 
     <div class="event-details">
       <div class="detail-row">
+        <div class="detail-label">Event ID</div>
+        <div class="detail-value">
+          <code class="event-id" onclick="navigator.clipboard.writeText(this.textContent)" title="Click to copy">
+            <%= event.eventId %>
+          </code>
+        </div>
+      </div>
+
+      <div class="detail-row">
         <div class="detail-label">Title</div>
         <div class="detail-value"><%= event.title %></div>
       </div>
@@ -296,6 +315,20 @@
       <div class="detail-row">
         <div class="detail-label">Created At</div>
         <div class="detail-value"><%= new Date(event.createdAt).toLocaleString() %></div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Gallery Status</div>
+        <div class="detail-value">
+          <% if (event.galleryId) { %>
+            <span class="badge badge-success">Gallery Available</span>
+            <code class="event-id ms-2" onclick="navigator.clipboard.writeText(this.textContent)" title="Click to copy">
+              <%= event.galleryId %>
+            </code>
+          <% } else { %>
+            <span class="badge badge-warning">No Gallery Created</span>
+          <% } %>
+        </div>
       </div>
     </div>
 
