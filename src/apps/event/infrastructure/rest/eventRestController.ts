@@ -2,22 +2,30 @@ import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { EventFacade } from '../../domain/EventFacade';
 import { injectable, inject } from 'tsyringe';
-import { User } from '../../../user/domain/User';
+import { UserFacade } from '../../../user/domain/UserFacade';
+import { FileFacade } from '../../../file/domain/FileFacade';
 import { createAppError } from '../../../../middleware/errorMiddleware';
-import { File } from '../../../file/domain/File';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { s3Client, S3_BUCKET_NAME } from '../../../../config/s3config';
 import { generatePresignedUrlForObjectKey } from '../../../../utils/s3';
+import logger from '../../../../utils/logger';
 
 @injectable()
 export class EventRestController {
-  constructor(@inject('EventFacade') private readonly eventFacade: EventFacade) {}
+  constructor(
+    // eslint-disable-next-line no-unused-vars
+    @inject('EventFacade') private readonly eventFacade: EventFacade,
+    // eslint-disable-next-line no-unused-vars
+    @inject('UserFacade') private readonly userFacade: UserFacade,
+    // eslint-disable-next-line no-unused-vars
+    @inject('FileFacade') private readonly fileFacade: FileFacade,
+  ) {}
 
   createEvent = asyncHandler(async (req: Request, res: Response) => {
     const { date, description, title, username, imagePlaceholderObjectKey } = req.body;
-    const userExists = await User.existsByUsername(username);
-    if (!userExists) {
+    const user = await this.userFacade.getUserByUsername(username);
+    if (!user) {
       throw createAppError(404, 'User with such username does not exist');
     }
     const eventDto = await this.eventFacade.createEvent(
@@ -32,12 +40,12 @@ export class EventRestController {
 
   getEventsByUsername = asyncHandler(async (req: Request, res: Response) => {
     const { username } = req.params;
-    const userExists = await User.existsByUsername(username);
-    if (!userExists) {
+    const user = await this.userFacade.getUserByUsername(username);
+    if (!user) {
       throw createAppError(404, 'User with such username does not exist');
     }
     const events = await this.eventFacade.getEventsByUsername(username);
-    const files = await File.findByUsername(username);
+    const files = await this.fileFacade.getFilesByUsername(username);
 
     // Generate signed URLs for event placeholder images
     const eventsWithSignedUrls = await Promise.all(
@@ -49,17 +57,16 @@ export class EventRestController {
               event.imagePlaceholderObjectKey,
             );
           } catch (error) {
-            console.error('Error generating signed URL:', error);
+            logger.error('Error generating signed URL:', error);
           }
         }
 
-        const eventFiles = files.filter((file) => file.getEventId() === event.eventId);
-        const filesDto = eventFiles.map((file) => file.toResponse());
+        const eventFiles = files.filter((file) => file.eventId === event.eventId);
 
         return {
           ...event,
           signedImageUrl,
-          filesDto,
+          filesDto: eventFiles,
         };
       }),
     );
@@ -79,7 +86,7 @@ export class EventRestController {
       try {
         signedImageUrl = await generatePresignedUrlForObjectKey(event.imagePlaceholderObjectKey);
       } catch (error) {
-        console.error('Error generating signed URL:', error);
+        logger.error('Error generating signed URL:', error);
       }
     }
 
