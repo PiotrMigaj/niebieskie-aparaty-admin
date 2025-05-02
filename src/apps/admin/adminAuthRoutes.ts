@@ -46,7 +46,7 @@ router.post('/login', (req: Request, res: Response, next: NextFunction) => {
         }
 
         // Redirect to Swagger UI
-        return res.redirect('/api-docs');
+        return res.redirect('/users');
       });
     },
   )(req, res, next);
