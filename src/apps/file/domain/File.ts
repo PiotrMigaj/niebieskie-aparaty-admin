@@ -1,5 +1,5 @@
 import { PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
-import { dynamoDb } from '../../config/db';
+import { dynamoDb } from '../../../config/db';
 import { v4 as uuidv4 } from 'uuid';
 
 const TABLE_NAME = 'Files';
@@ -58,7 +58,7 @@ export class File {
   static async findByUsername(username: string): Promise<File[]> {
     const command = new ScanCommand({
       TableName: TABLE_NAME,
-      FilterExpression: 'username = :username', // Filter by username
+      FilterExpression: 'username = :username',
       ExpressionAttributeValues: {
         ':username': username,
       },

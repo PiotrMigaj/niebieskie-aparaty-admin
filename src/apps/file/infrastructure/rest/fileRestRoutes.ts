@@ -1,8 +1,10 @@
 import express from 'express';
-import { createFile } from './fileController';
-import { authenticate } from '../../middleware/authMiddleware';
+import { FileRestController } from './fileRestController';
+import { authenticate } from '../../../../middleware/authMiddleware';
+import { container } from 'tsyringe';
 
 const router = express.Router();
+const fileRestController = container.resolve(FileRestController);
 
 /**
  * @swagger
@@ -78,6 +80,6 @@ const router = express.Router();
  *       404:
  *         description: Not found, event with such eventId does not exist
  */
-router.post('', authenticate, createFile);
+router.post('', authenticate, fileRestController.createFile.bind(fileRestController));
 
 export default router;

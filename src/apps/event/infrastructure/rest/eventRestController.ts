@@ -4,7 +4,7 @@ import { EventFacade } from '../../domain/EventFacade';
 import { injectable, inject } from 'tsyringe';
 import { User } from '../../../user/domain/User';
 import { createAppError } from '../../../../middleware/errorMiddleware';
-import { File } from '../../../file/File';
+import { File } from '../../../file/domain/File';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { s3Client, S3_BUCKET_NAME } from '../../../../config/s3config';
