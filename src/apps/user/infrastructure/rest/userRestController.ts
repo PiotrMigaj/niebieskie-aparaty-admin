@@ -5,7 +5,7 @@ import { injectable, inject } from 'tsyringe';
 
 @injectable()
 export class UserRestController {
-  constructor(@inject("UserFacade") private readonly userFacade: UserFacade) {}
+  constructor(@inject('UserFacade') private readonly userFacade: UserFacade) {}
 
   generatePassword = asyncHandler(async (req: Request, res: Response) => {
     const { length } = req.query;

@@ -40,12 +40,12 @@ export class EventController {
     }
 
     const files = await this.fileFacade.getFilesByUsername(event.username);
-    const eventFiles = files.filter(file => file.eventId === event.eventId);
+    const eventFiles = files.filter((file) => file.eventId === event.eventId);
 
-    res.render('events/details', { 
-      event: { ...event, signedImageUrl }, 
+    res.render('events/details', {
+      event: { ...event, signedImageUrl },
       user,
-      files: eventFiles
+      files: eventFiles,
     });
-  }
+  });
 }

@@ -16,7 +16,7 @@ export class FileController {
 
   showUploadForm = asyncHandler(async (req: Request, res: Response) => {
     const { eventId } = req.params;
-    
+
     const event = await this.eventFacade.getEventById(eventId);
     if (!event) {
       throw createAppError(404, 'Event not found');
@@ -31,5 +31,5 @@ export class FileController {
       username: event.username,
       eventId: event.eventId,
     });
-  }
-};
+  });
+}

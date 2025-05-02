@@ -1,360 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NIEBIESKIE APARATY | Upload File</title>
-  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary-color: #ffffff;
-      --secondary-color: #121212;
-      --accent-color: #f5f5f5;
-      --text-light: #989898;
-      --error-color: #dc3545;
-    }
-    
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: var(--primary-color);
-      color: var(--secondary-color);
-      letter-spacing: 0.5px;
-      min-height: 100vh;
-      padding-bottom: 60px;
-    }
-
-    .navbar {
-      background-color: var(--secondary-color);
-      padding: 1rem 2rem;
-    }
-
-    .navbar-brand {
-      font-family: 'Italiana', serif;
-      color: var(--primary-color) !important;
-      font-size: 1.5rem;
-      letter-spacing: 2px;
-    }
-
-    .nav-link {
-      color: var(--primary-color) !important;
-      letter-spacing: 1px;
-      margin: 0 1rem;
-      transition: opacity 0.3s ease;
-    }
-
-    .nav-link:hover {
-      opacity: 0.8;
-    }
-
-    .content-container {
-      max-width: 600px;
-      margin: 2rem auto;
-      padding: 2rem;
-      background-color: var(--primary-color);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-      border-radius: 4px;
-    }
-
-    .page-title {
-      font-family: 'Italiana', serif;
-      font-size: 2.5rem;
-      letter-spacing: 2px;
-      text-align: center;
-      margin-bottom: 2rem;
-      position: relative;
-    }
-
-    .page-title::after {
-      content: '';
-      position: absolute;
-      width: 50px;
-      height: 1px;
-      background-color: var(--secondary-color);
-      bottom: -15px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .form-control {
-      border: none;
-      border-bottom: 1px solid #ddd;
-      border-radius: 0;
-      padding: 15px 0;
-      margin-bottom: 20px;
-      font-weight: 300;
-    }
-
-    .form-control:focus {
-      box-shadow: none;
-      border-color: var(--secondary-color);
-    }
-
-    .form-control:disabled {
-      background-color: var(--accent-color);
-      cursor: not-allowed;
-    }
-
-    .btn-dark {
-      background-color: var(--secondary-color);
-      border: none;
-      letter-spacing: 2px;
-      padding: 12px 25px;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      transition: all 0.3s ease;
-    }
-
-    .btn-dark:hover {
-      background-color: #333;
-    }
-
-    .btn-outline-dark {
-      border: 1px solid var(--secondary-color);
-      color: var(--secondary-color);
-      letter-spacing: 2px;
-      padding: 12px 25px;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      transition: all 0.3s ease;
-    }
-
-    .btn-outline-dark:hover {
-      background-color: var(--secondary-color);
-      color: var(--primary-color);
-    }
-
-    .footer {
-      position: fixed;
-      bottom: 20px;
-      width: 100%;
-      text-align: center;
-      color: var(--text-light);
-      font-size: 0.8rem;
-    }
-
-    #progressContainer {
-      margin-top: 1rem;
-      display: none;
-    }
-
-    .progress-bar {
-      height: 8px;
-      background-color: #e9ecef;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background-color: var(--secondary-color);
-      transition: width 0.3s ease;
-    }
-
-    .status-message {
-      margin-top: 0.5rem;
-      font-size: 0.9rem;
-    }
-
-    .success {
-      color: #198754;
-    }
-
-    .error {
-      color: #dc3545;
-    }
-  </style>
-</head>
-<body>
-  <nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/api-docs">NIEBIESKIE APARATY</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link active" href="/users">Users</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout">Logout</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <div class="content-container">
-    <h1 class="page-title">Upload File</h1>
-
-    <form id="uploadForm">
-      <input type="hidden" id="username" value="<%= username %>" />
-      <input type="hidden" id="eventId" value="<%= eventId %>" />
-
-      <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-        <input type="text" class="form-control" id="description" required>
-      </div>
-
-      <div class="mb-3">
-        <label for="fileInput" class="form-label">Choose ZIP File</label>
-        <input type="file" class="form-control" id="fileInput" accept=".zip" required>
-      </div>
-
-      <div id="progressContainer">
-        <div class="progress-bar">
-          <div id="progressBarFill" class="progress-fill" style="width: 0%"></div>
-        </div>
-        <div id="progressPercentage" class="status-message">0%</div>
-      </div>
-
-      <p id="statusMessage" class="status-message"></p>
-
-      <div class="d-flex justify-content-between mt-4">
-        <a href="/events/<%= eventId %>" class="btn btn-outline-dark">Back</a>
-        <button type="submit" id="submitButton" class="btn btn-dark">Upload File</button>
-      </div>
-    </form>
-  </div>
-
-  <div class="footer">
-    © 2025 NIEBIESKIE APARATY. All Rights Reserved.
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('uploadForm');
-      const fileInput = document.getElementById('fileInput');
-      const submitButton = document.getElementById('submitButton');
-      const progressContainer = document.getElementById('progressContainer');
-      const progressBarFill = document.getElementById('progressBarFill');
-      const progressPercentage = document.getElementById('progressPercentage');
-      const statusMessage = document.getElementById('statusMessage');
-      const username = document.getElementById('username').value;
-      const eventId = document.getElementById('eventId').value;
-      const description = document.getElementById('description');
-
-      let selectedFile = null;
-
-      fileInput.addEventListener('change', (e) => {
-        selectedFile = e.target.files[0] || null;
-        progressContainer.style.display = 'none';
-        progressBarFill.style.width = '0%';
-        progressPercentage.textContent = '0%';
-        statusMessage.textContent = '';
-        statusMessage.className = 'status-message';
-      });
-
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        if (!selectedFile || !description.value.trim()) {
-          statusMessage.textContent = 'Please fill in all required fields.';
-          statusMessage.className = 'status-message error';
-          return;
-        }
-
-        try {
-          submitButton.disabled = true;
-          submitButton.textContent = 'Uploading...';
-
-          const res = await fetch('/api/events/upload-url', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              filename: selectedFile.name,
-              contentType: selectedFile.type,
-              username: username,
-              eventId: eventId,
-            }),
-            credentials: 'include',
-          });
-
-          const data = await res.json();
-
-          if (!res.ok || data.error) {
-            throw new Error(data.error || `Failed to get URL: ${res.status}`);
-          }
-
-          const { presignedUrl, key } = data;
-          progressContainer.style.display = 'block';
-
-          await uploadFileWithProgress(presignedUrl, selectedFile, (progress) => {
-            progressBarFill.style.width = `${progress}%`;
-            progressPercentage.textContent = `${progress}%`;
-          });
-
-          // Create file record
-          const fileRes = await fetch('/api/files', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              description: description.value,
-              eventId: eventId,
-              username: username,
-              objectKey: key,
-            }),
-            credentials: 'include',
-          });
-
-          if (!fileRes.ok) {
-            throw new Error('Failed to create file record');
-          }
-
-          statusMessage.textContent = 'File uploaded successfully!';
-          statusMessage.className = 'status-message success';
-
-          setTimeout(() => {
-            window.location.href = `/events/${eventId}`;
-          }, 1500);
-        } catch (err) {
-          console.error(err);
-          statusMessage.textContent = err.message;
-          statusMessage.className = 'status-message error';
-          progressContainer.style.display = 'none';
-        } finally {
-          submitButton.disabled = false;
-          submitButton.textContent = 'Upload File';
-        }
-      });
-
-      function uploadFileWithProgress(url, file, onProgress) {
-        return new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-
-          xhr.upload.onprogress = (e) => {
-            if (e.lengthComputable) {
-              const percentComplete = Math.round((e.loaded / e.total) * 100);
-              onProgress(percentComplete);
-            }
-          };
-
-          xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              resolve();
-            } else {
-              reject(new Error(`Upload failed with status ${xhr.status}`));
-            }
-          };
-
-          xhr.onerror = () => reject(new Error('Network error during upload'));
-
-          xhr.open('PUT', url);
-          xhr.setRequestHeader('Content-Type', file.type);
-          xhr.send(file);
-        });
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NIEBIESKIE APARATY | Upload File</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Italiana&family=Montserrat:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #ffffff;
+        --secondary-color: #121212;
+        --accent-color: #f5f5f5;
+        --text-light: #989898;
+        --error-color: #dc3545;
       }
-    });
-  </script>
-</body>
+
+      body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: var(--primary-color);
+        color: var(--secondary-color);
+        letter-spacing: 0.5px;
+        min-height: 100vh;
+        padding-bottom: 60px;
+      }
+
+      .navbar {
+        background-color: var(--secondary-color);
+        padding: 1rem 2rem;
+      }
+
+      .navbar-brand {
+        font-family: 'Italiana', serif;
+        color: var(--primary-color) !important;
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+      }
+
+      .nav-link {
+        color: var(--primary-color) !important;
+        letter-spacing: 1px;
+        margin: 0 1rem;
+        transition: opacity 0.3s ease;
+      }
+
+      .nav-link:hover {
+        opacity: 0.8;
+      }
+
+      .content-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: var(--primary-color);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        border-radius: 4px;
+      }
+
+      .page-title {
+        font-family: 'Italiana', serif;
+        font-size: 2.5rem;
+        letter-spacing: 2px;
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+      }
+
+      .page-title::after {
+        content: '';
+        position: absolute;
+        width: 50px;
+        height: 1px;
+        background-color: var(--secondary-color);
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .form-control {
+        border: none;
+        border-bottom: 1px solid #ddd;
+        border-radius: 0;
+        padding: 15px 0;
+        margin-bottom: 20px;
+        font-weight: 300;
+      }
+
+      .form-control:focus {
+        box-shadow: none;
+        border-color: var(--secondary-color);
+      }
+
+      .form-control:disabled {
+        background-color: var(--accent-color);
+        cursor: not-allowed;
+      }
+
+      .btn-dark {
+        background-color: var(--secondary-color);
+        border: none;
+        letter-spacing: 2px;
+        padding: 12px 25px;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+      }
+
+      .btn-dark:hover {
+        background-color: #333;
+      }
+
+      .btn-outline-dark {
+        border: 1px solid var(--secondary-color);
+        color: var(--secondary-color);
+        letter-spacing: 2px;
+        padding: 12px 25px;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+      }
+
+      .btn-outline-dark:hover {
+        background-color: var(--secondary-color);
+        color: var(--primary-color);
+      }
+
+      .footer {
+        position: fixed;
+        bottom: 20px;
+        width: 100%;
+        text-align: center;
+        color: var(--text-light);
+        font-size: 0.8rem;
+      }
+
+      #progressContainer {
+        margin-top: 1rem;
+        display: none;
+      }
+
+      .progress-bar {
+        height: 8px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background-color: var(--secondary-color);
+        transition: width 0.3s ease;
+      }
+
+      .status-message {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .success {
+        color: #198754;
+      }
+
+      .error {
+        color: #dc3545;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/api-docs">NIEBIESKIE APARATY</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="/users">Users</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="content-container">
+      <h1 class="page-title">Upload File</h1>
+
+      <form id="uploadForm">
+        <input type="hidden" id="username" value="<%= username %>" />
+        <input type="hidden" id="eventId" value="<%= eventId %>" />
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <input type="text" class="form-control" id="description" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="fileInput" class="form-label">Choose File</label>
+          <input type="file" class="form-control" id="fileInput" required />
+        </div>
+
+        <div id="progressContainer">
+          <div class="progress-bar">
+            <div id="progressBarFill" class="progress-fill" style="width: 0%"></div>
+          </div>
+          <div id="progressPercentage" class="status-message">0%</div>
+        </div>
+
+        <p id="statusMessage" class="status-message"></p>
+
+        <div class="d-flex justify-content-between mt-4">
+          <a href="/events/<%= eventId %>" class="btn btn-outline-dark">Back</a>
+          <button type="submit" id="submitButton" class="btn btn-dark">Upload File</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="footer">© 2025 NIEBIESKIE APARATY. All Rights Reserved.</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/upload.js"></script>
+  </body>
 </html>

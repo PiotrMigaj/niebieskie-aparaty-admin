@@ -1,7 +1,7 @@
 import express from 'express';
 import { FileRestController } from './fileRestController';
-import { authenticate } from '../../../../middleware/authMiddleware';
 import { container } from 'tsyringe';
+import { ensureAuthenticated } from '../../../../middleware/ensureAuthenticated';
 
 const router = express.Router();
 const fileRestController = container.resolve(FileRestController);
@@ -80,6 +80,6 @@ const fileRestController = container.resolve(FileRestController);
  *       404:
  *         description: Not found, event with such eventId does not exist
  */
-router.post('', authenticate, fileRestController.createFile.bind(fileRestController));
+router.post('', ensureAuthenticated, fileRestController.createFile.bind(fileRestController));
 
 export default router;
