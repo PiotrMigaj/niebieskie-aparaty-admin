@@ -8,6 +8,7 @@ import { File } from '../../../file/File';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { s3Client, S3_BUCKET_NAME } from '../../../../config/s3config';
+import { generatePresignedUrlForObjectKey } from '../../../../utils/s3';
 
 @injectable()
 export class EventRestController {
@@ -37,15 +38,33 @@ export class EventRestController {
     }
     const events = await this.eventFacade.getEventsByUsername(username);
     const files = await File.findByUsername(username);
-    const eventsDto = events.map((event) => {
-      const eventFiles = files.filter((file) => file.getEventId() === event.eventId);
-      const filesDto = eventFiles.map((file) => file.toResponse());
-      return {
-        ...event,
-        filesDto: filesDto,
-      };
-    });
-    res.status(200).json({ eventsDto });
+
+    // Generate signed URLs for event placeholder images
+    const eventsWithSignedUrls = await Promise.all(
+      events.map(async (event) => {
+        let signedImageUrl = null;
+        if (event.imagePlaceholderObjectKey) {
+          try {
+            signedImageUrl = await generatePresignedUrlForObjectKey(
+              event.imagePlaceholderObjectKey,
+            );
+          } catch (error) {
+            console.error('Error generating signed URL:', error);
+          }
+        }
+
+        const eventFiles = files.filter((file) => file.getEventId() === event.eventId);
+        const filesDto = eventFiles.map((file) => file.toResponse());
+
+        return {
+          ...event,
+          signedImageUrl,
+          filesDto,
+        };
+      }),
+    );
+
+    res.status(200).json({ eventsDto: eventsWithSignedUrls });
   });
 
   getEventById = asyncHandler(async (req: Request, res: Response) => {
@@ -54,7 +73,17 @@ export class EventRestController {
     if (!event) {
       throw createAppError(404, 'Event not found');
     }
-    res.render('events/details', { event });
+
+    let signedImageUrl = null;
+    if (event.imagePlaceholderObjectKey) {
+      try {
+        signedImageUrl = await generatePresignedUrlForObjectKey(event.imagePlaceholderObjectKey);
+      } catch (error) {
+        console.error('Error generating signed URL:', error);
+      }
+    }
+
+    res.render('events/details', { event: { ...event, signedImageUrl } });
   });
 
   updateEventImagePlaceholder = asyncHandler(async (req: Request, res: Response) => {

@@ -4,6 +4,8 @@ import { EventFacade } from '../../domain/EventFacade';
 import { UserFacade } from '../../../user/domain/UserFacade';
 import { injectable, inject } from 'tsyringe';
 import { createAppError } from '../../../../middleware/errorMiddleware';
+import { generatePresignedUrlForObjectKey } from '../../../../utils/s3';
+import logger from '../../../../utils/logger';
 
 @injectable()
 export class EventController {
@@ -26,6 +28,15 @@ export class EventController {
       throw createAppError(404, 'User not found');
     }
 
-    res.render('events/details', { event, user });
+    let signedImageUrl = null;
+    if (event.imagePlaceholderObjectKey) {
+      try {
+        signedImageUrl = await generatePresignedUrlForObjectKey(event.imagePlaceholderObjectKey);
+      } catch (error) {
+        logger.error('Error generating signed URL:', error);
+      }
+    }
+
+    res.render('events/details', { event: { ...event, signedImageUrl }, user });
   });
 }

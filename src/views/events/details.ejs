@@ -178,6 +178,28 @@
     .error {
       color: #dc3545;
     }
+
+    .gallery-image {
+      width: 100%;
+      height: auto;
+      max-height: 400px;
+      object-fit: contain;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+
+    .no-image-placeholder {
+      width: 100%;
+      height: 200px;
+      background-color: #f8f9fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      color: #6c757d;
+      font-size: 1.1rem;
+    }
   </style>
 </head>
 <body>
@@ -231,14 +253,18 @@
     </div>
 
     <div class="image-upload-section">
-      <h3 class="mb-4">Event Image</h3>
+      <h3 class="mb-4">Event Gallery</h3>
       
-      <% if (event.imagePlaceholderObjectKey) { %>
+      <% if (event.imagePlaceholderObjectKey && event.signedImageUrl) { %>
         <img 
-          src="https://niebieskie-aparaty-client-gallery.s3.eu-central-1.amazonaws.com/<%= event.imagePlaceholderObjectKey %>" 
-          alt="Event image" 
-          class="image-preview mb-3"
+          src="<%= event.signedImageUrl %>" 
+          alt="Event gallery image"
+          class="gallery-image"
         />
+      <% } else { %>
+        <div class="no-image-placeholder">
+          <p>No gallery image available</p>
+        </div>
       <% } %>
 
       <form id="uploadForm" class="upload-form">
