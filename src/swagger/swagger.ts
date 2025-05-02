@@ -42,7 +42,7 @@ const swaggerOptions = {
   apis: [
     './src/apps/user/infrastructure/rest/userRestRoutes.ts',
     './src/apps/event/infrastructure/rest/eventRestRoutes.ts',
-    './src/apps/file/fileRoutes.ts',
+    './src/apps/file/infrastructure/rest/fileRestRoutes.ts',
     './src/apps/auth/authRoutes.ts',
   ],
 };
