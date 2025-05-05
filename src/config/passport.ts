@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -15,13 +16,31 @@ const jwtOptions = {
 passport.use(
   'admin-local',
   new LocalStrategy((username, password, done) => {
-    // Compare username and password from form submission
     if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
       return done(null, { username });
     } else {
       return done(null, false, { message: 'Invalid credentials' });
     }
   }),
+);
+
+// Google Strategy
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      callbackURL: '/auth/google/callback',
+    },
+    (accessToken, refreshToken, profile, done) => {
+      const email = profile.emails?.[0]?.value;
+
+      if (email === process.env.ADMIN_USERNAME) {
+        return done(null, { username: email });
+      }
+      return done(null, false, { message: 'Unauthorized email' });
+    },
+  ),
 );
 
 // JWT strategy for authentication
@@ -35,7 +54,7 @@ passport.use(
   }),
 );
 
-// Serialize and deserialize user for session (local login)
+// Serialize and deserialize user for session
 passport.serializeUser((user: any, done) => {
   done(null, user.username);
 });

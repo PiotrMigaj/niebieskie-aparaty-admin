@@ -88,9 +88,7 @@
       border-color: var(--secondary-color);
     }
     
-    .btn-dark {
-      background-color: var(--secondary-color);
-      border: none;
+    .btn {
       letter-spacing: 2px;
       padding: 12px 25px;
       text-transform: uppercase;
@@ -100,8 +98,24 @@
       margin-top: 1rem;
     }
     
+    .btn-dark {
+      background-color: var(--secondary-color);
+      border: none;
+    }
+    
     .btn-dark:hover {
       background-color: #333;
+    }
+
+    .btn-google {
+      background-color: #4285f4;
+      color: white;
+      border: none;
+    }
+
+    .btn-google:hover {
+      background-color: #357abd;
+      color: white;
     }
     
     .login-footer {
@@ -111,6 +125,37 @@
       text-align: center;
       color: var(--text-light);
       font-size: 0.8rem;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 2rem 0;
+      position: relative;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 45%;
+      height: 1px;
+      background-color: #ddd;
+    }
+
+    .divider::before {
+      left: 0;
+    }
+
+    .divider::after {
+      right: 0;
+    }
+
+    .divider-text {
+      background-color: white;
+      padding: 0 1rem;
+      color: var(--text-light);
+      font-size: 0.9rem;
     }
   </style>
 </head>
@@ -137,6 +182,14 @@
       </div>
       <button type="submit" class="btn btn-dark">LOGIN</button>
     </form>
+
+    <div class="divider">
+      <span class="divider-text">OR</span>
+    </div>
+
+    <a href="/auth/google" class="btn btn-google">
+      <i class="fab fa-google me-2"></i> Continue with Google
+    </a>
   </div>
   
   <div class="login-footer">

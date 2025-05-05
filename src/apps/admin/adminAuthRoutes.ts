@@ -14,53 +14,50 @@ router.get('/login', (req: Request, res: Response): void => {
 router.post('/login', (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate(
     'admin-local',
-    // eslint-disable-next-line consistent-return
     (err: Error | null, user: any, info: { message: string }) => {
-      // Handle authentication errors
       if (err) {
         return next(err);
       }
 
-      // If authentication failed
       if (!user) {
-        // Handle failure (optional flash message)
         if (req.flash) {
           req.flash('error', info.message);
         }
         return res.redirect('/login');
       }
 
-      // Log the user in
       req.logIn(user, (loginErr: Error | null) => {
         if (loginErr) {
           return next(loginErr);
         }
 
-        // Generate JWT token after successful login
         const token = generateToken('admin', ADMIN_USERNAME);
-
-        // Store the token in session
-        if (req.session) {
-          // Now TypeScript recognizes jwtToken as a valid property
-          (req.session as any).jwtToken = token;
-        }
-
-        // Redirect to Swagger UI
+        (req.session as any).jwtToken = token;
         return res.redirect('/users');
       });
     },
   )(req, res, next);
 });
 
-// Logout route to destroy the session and redirect to login page
+// Google Auth Routes
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get(
+  '/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login', failureFlash: true }),
+  (req: Request, res: Response) => {
+    const token = generateToken('admin', ADMIN_USERNAME);
+    (req.session as any).jwtToken = token;
+    res.redirect('/users');
+  },
+);
+
 router.get('/logout', (req: Request, res: Response): void => {
   req.logout((err: any) => {
-    // Type the error if necessary
     if (err) {
-      // Handle error and return the error response
       return res.status(500).send('Failed to log out');
     }
-    return res.redirect('/login'); // Return the redirect after logout
+    return res.redirect('/login');
   });
 });
 
