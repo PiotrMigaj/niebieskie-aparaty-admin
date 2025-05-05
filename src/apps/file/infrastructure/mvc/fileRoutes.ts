@@ -12,4 +12,10 @@ router.get(
   fileController.showUploadForm.bind(fileController),
 );
 
+router.get(
+  '/upload-large/:eventId',
+  ensureAdminSession,
+  fileController.showLargeFileUploadForm.bind(fileController),
+);
+
 export default router;

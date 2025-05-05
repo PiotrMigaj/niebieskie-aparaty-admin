@@ -82,4 +82,22 @@ const fileRestController = container.resolve(FileRestController);
  */
 router.post('', ensureAuthenticated, fileRestController.createFile.bind(fileRestController));
 
+router.post(
+  '/multipart/init',
+  ensureAuthenticated,
+  fileRestController.initMultipartUpload.bind(fileRestController),
+);
+
+router.post(
+  '/multipart/part',
+  ensureAuthenticated,
+  fileRestController.getPartUploadUrl.bind(fileRestController),
+);
+
+router.post(
+  '/multipart/complete',
+  ensureAuthenticated,
+  fileRestController.completeMultipartUpload.bind(fileRestController),
+);
+
 export default router;

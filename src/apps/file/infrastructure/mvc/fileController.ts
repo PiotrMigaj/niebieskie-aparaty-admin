@@ -32,4 +32,23 @@ export class FileController {
       eventId: event.eventId,
     });
   });
+
+  showLargeFileUploadForm = asyncHandler(async (req: Request, res: Response) => {
+    const { eventId } = req.params;
+
+    const event = await this.eventFacade.getEventById(eventId);
+    if (!event) {
+      throw createAppError(404, 'Event not found');
+    }
+
+    const user = await this.userFacade.getUserByUsername(event.username);
+    if (!user) {
+      throw createAppError(404, 'User not found');
+    }
+
+    res.render('files/upload-large', {
+      username: event.username,
+      eventId: event.eventId,
+    });
+  });
 }

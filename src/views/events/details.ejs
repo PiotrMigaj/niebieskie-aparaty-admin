@@ -416,7 +416,10 @@
     <div class="files-section">
       <div class="files-header">
         <h3 class="section-title">Files</h3>
-        <a href="/files/upload/<%= event.eventId %>" class="btn btn-dark">Add File</a>
+        <div class="d-flex gap-2">
+          <a href="/files/upload/<%= event.eventId %>" class="btn btn-dark">Add File</a>
+          <a href="/files/upload-large/<%= event.eventId %>" class="btn btn-dark">Add Large File (>5GB)</a>
+        </div>
       </div>
 
       <% if (files && files.length > 0) { %>
