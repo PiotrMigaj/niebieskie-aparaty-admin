@@ -194,4 +194,46 @@ router.post(
   eventRestController.generateUploadUrl.bind(eventRestController),
 );
 
+/**
+ * @swagger
+ * /api/events/{eventId}/toggle-selection:
+ *   patch:
+ *     summary: Toggle event selection availability
+ *     description: Toggle the availability of selection for a specific event.
+ *     tags:
+ *       - Events
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: eventId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               selectionAvailable:
+ *                 type: boolean
+ *                 description: Whether selection is available for this event
+ *     responses:
+ *       200:
+ *         description: Selection availability updated successfully
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Event not found
+ */
+router.patch(
+  '/:eventId/toggle-selection',
+  ensureAuthenticated,
+  eventRestController.toggleSelectionAvailable.bind(eventRestController),
+);
+
 export default router;

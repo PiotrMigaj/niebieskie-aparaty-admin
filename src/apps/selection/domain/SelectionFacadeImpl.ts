@@ -1,0 +1,67 @@
+import { injectable } from 'tsyringe';
+import { Selection, SelectionDto } from './Selection';
+import { SelectionFacade } from './SelectionFacade';
+import { createAppError } from '../../../middleware/errorMiddleware';
+
+@injectable()
+export class SelectionFacadeImpl implements SelectionFacade {
+  async createSelection(
+    eventId: string,
+    eventTitle: string,
+    maxNumberOfPhotos: number,
+    username: string,
+  ): Promise<SelectionDto> {
+    // Check if selection already exists for this event
+    const existingSelection = await Selection.findByEventId(eventId);
+    if (existingSelection) {
+      throw createAppError(409, 'Selection already exists for this event');
+    }
+
+    const selection = new Selection(eventId, eventTitle, maxNumberOfPhotos, username);
+    const savedSelection = await selection.save();
+    return savedSelection.toResponse();
+  }
+
+  async getSelectionByEventId(eventId: string): Promise<SelectionDto | null> {
+    const selection = await Selection.findByEventId(eventId);
+    return selection ? selection.toResponse() : null;
+  }
+
+  async getSelectionsByUsername(username: string): Promise<SelectionDto[]> {
+    const selections = await Selection.findByUsername(username);
+    return selections.map((selection) => selection.toResponse());
+  }
+
+  async getSelectionById(selectionId: string): Promise<SelectionDto | null> {
+    const selection = await Selection.findById(selectionId);
+    return selection ? selection.toResponse() : null;
+  }
+
+  async selectionExistsForEvent(eventId: string): Promise<boolean> {
+    return await Selection.existsByEventId(eventId);
+  }
+
+  async deleteSelection(selectionId: string): Promise<void> {
+    const selectionExists = await Selection.findById(selectionId);
+    if (!selectionExists) {
+      throw createAppError(404, 'Selection not found');
+    }
+    await Selection.deleteById(selectionId);
+  }
+
+  async updateSelectedImages(selectionId: string, selectedImages: string[]): Promise<void> {
+    const selectionExists = await Selection.findById(selectionId);
+    if (!selectionExists) {
+      throw createAppError(404, 'Selection not found');
+    }
+    await Selection.updateSelectedImages(selectionId, selectedImages);
+  }
+
+  async updateBlocked(selectionId: string, blocked: boolean): Promise<void> {
+    const selectionExists = await Selection.findById(selectionId);
+    if (!selectionExists) {
+      throw createAppError(404, 'Selection not found');
+    }
+    await Selection.updateBlocked(selectionId, blocked);
+  }
+}

@@ -8,8 +8,67 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressBarFill = document.getElementById('progressBarFill');
   const progressPercentage = document.getElementById('progressPercentage');
   const statusMessage = document.getElementById('statusMessage');
+  const toggleSelectionBtn = document.getElementById('toggleSelectionBtn');
 
   let selectedFile = null;
+
+  // Toggle selection availability
+  if (toggleSelectionBtn && !toggleSelectionBtn.disabled) {
+    toggleSelectionBtn.addEventListener('click', async () => {
+      const eventId = toggleSelectionBtn.dataset.eventId;
+      const currentStatus = toggleSelectionBtn.dataset.currentStatus;
+      
+      // If currentStatus is undefined, the feature is not available
+      if (currentStatus === 'undefined') {
+        return;
+      }
+      
+      const isCurrentlyEnabled = currentStatus === 'true';
+      const newStatus = !isCurrentlyEnabled;
+
+      try {
+        toggleSelectionBtn.disabled = true;
+        toggleSelectionBtn.textContent = 'Updating...';
+
+        const response = await fetch(`/api/events/${eventId}/toggle-selection`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            selectionAvailable: newStatus
+          }),
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || `Failed to update selection status: ${response.status}`);
+        }
+
+        // Reload the page to update the UI and show/hide selection details button
+        window.location.reload();
+
+      } catch (error) {
+        console.error('Error toggling selection:', error);
+        
+        if (statusMessage) {
+          const originalText = statusMessage.textContent;
+          const originalClass = statusMessage.className;
+          statusMessage.textContent = `Error: ${error.message}`;
+          statusMessage.className = 'status-message error';
+          
+          setTimeout(() => {
+            statusMessage.textContent = originalText;
+            statusMessage.className = originalClass;
+          }, 5000);
+        }
+      } finally {
+        toggleSelectionBtn.disabled = false;
+        // Button text will be set correctly above based on the new status
+      }
+    });
+  }
 
   if (fileInput) {
     fileInput.addEventListener('change', (e) => {

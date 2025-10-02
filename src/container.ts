@@ -6,9 +6,12 @@ import { EventFacade } from './apps/event/domain/EventFacade';
 import { EventFacadeImpl } from './apps/event/domain/EventFacadeImpl';
 import { FileFacade } from './apps/file/domain/FileFacade';
 import { FileFacadeImpl } from './apps/file/domain/FileFacadeImpl';
+import { SelectionFacade } from './apps/selection/domain/SelectionFacade';
+import { SelectionFacadeImpl } from './apps/selection/domain/SelectionFacadeImpl';
 
 container.registerSingleton<UserFacade>('UserFacade', UserFacadeImpl);
 container.registerSingleton<EventFacade>('EventFacade', EventFacadeImpl);
 container.registerSingleton<FileFacade>('FileFacade', FileFacadeImpl);
+container.registerSingleton<SelectionFacade>('SelectionFacade', SelectionFacadeImpl);
 
 export { container };

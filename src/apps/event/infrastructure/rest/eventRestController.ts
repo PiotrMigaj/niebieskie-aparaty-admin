@@ -128,4 +128,24 @@ export class EventRestController {
       throw createAppError(500, 'Failed to generate upload URL');
     }
   });
+
+  toggleSelectionAvailable = asyncHandler(async (req: Request, res: Response) => {
+    const { eventId } = req.params;
+    const { selectionAvailable } = req.body;
+
+    if (typeof selectionAvailable !== 'boolean') {
+      throw createAppError(400, 'selectionAvailable must be a boolean value');
+    }
+
+    const event = await this.eventFacade.getEventById(eventId);
+    if (!event) {
+      throw createAppError(404, 'Event not found');
+    }
+
+    await this.eventFacade.updateSelectionAvailable(eventId, selectionAvailable);
+    res.status(200).json({ 
+      message: 'Selection availability updated successfully',
+      selectionAvailable 
+    });
+  });
 }

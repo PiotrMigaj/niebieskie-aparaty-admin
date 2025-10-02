@@ -42,4 +42,12 @@ export class EventFacadeImpl implements EventFacade {
     }
     await Event.updateImagePlaceholderObjectKey(eventId, newKey);
   }
+
+  async updateSelectionAvailable(eventId: string, selectionAvailable: boolean): Promise<void> {
+    const eventExists = await Event.existsById(eventId);
+    if (!eventExists) {
+      throw createAppError(404, 'Event not found');
+    }
+    await Event.updateSelectionAvailable(eventId, selectionAvailable);
+  }
 }

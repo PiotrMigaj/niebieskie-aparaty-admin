@@ -3,7 +3,6 @@ import asyncHandler from 'express-async-handler';
 import { EventFacade } from '../../domain/EventFacade';
 import { UserFacade } from '../../../user/domain/UserFacade';
 import { FileFacade } from '../../../file/domain/FileFacade';
-import { SelectionFacade } from '../../../selection/domain/SelectionFacade';
 import { injectable, inject } from 'tsyringe';
 import { createAppError } from '../../../../middleware/errorMiddleware';
 import { generatePresignedUrlForObjectKey } from '../../../../utils/s3';
@@ -15,7 +14,6 @@ export class EventController {
     @inject('EventFacade') private readonly eventFacade: EventFacade,
     @inject('UserFacade') private readonly userFacade: UserFacade,
     @inject('FileFacade') private readonly fileFacade: FileFacade,
-    @inject('SelectionFacade') private readonly selectionFacade: SelectionFacade,
   ) {}
 
   getEventDetails = asyncHandler(async (req: Request, res: Response) => {
@@ -44,14 +42,10 @@ export class EventController {
     const files = await this.fileFacade.getFilesByUsername(event.username);
     const eventFiles = files.filter((file) => file.eventId === event.eventId);
 
-    // Check if selection exists for this event
-    const selection = await this.selectionFacade.getSelectionByEventId(event.eventId);
-
     res.render('events/details', {
       event: { ...event, signedImageUrl },
       user,
       files: eventFiles,
-      selection,
     });
   });
 }

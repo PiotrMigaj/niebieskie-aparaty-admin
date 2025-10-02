@@ -12,4 +12,5 @@ export interface EventFacade {
   getEventById(eventId: string): Promise<EventDto | null>;
   deleteEvent(eventId: string): Promise<void>;
   updateEventImagePlaceholder(eventId: string, newKey: string | null): Promise<void>;
+  updateSelectionAvailable(eventId: string, selectionAvailable: boolean): Promise<void>;
 }

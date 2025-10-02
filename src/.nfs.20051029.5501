@@ -23,7 +23,6 @@ import fileRestRoutes from './apps/file//infrastructure/rest/fileRestRoutes';
 import fileRoutes from './apps/file//infrastructure/mvc/fileRoutes';
 import authRoutes from './apps/auth/authRoutes';
 import uploadRoutes from './apps/upload/uploadRoutes';
-import selectionRoutes from './apps/selection/infrastructure/mvc/selectionRoutes';
 
 // Import middleware
 import { errorHandler } from './middleware/errorMiddleware';
@@ -129,7 +128,6 @@ app.use('/upload', uploadRoutes);
 app.use('/users', userRoutes);
 app.use('/events', eventRoutes);
 app.use('/files', fileRoutes);
-app.use('/selection', selectionRoutes);
 
 // Swagger Documentation
 // Serve the static swagger files first

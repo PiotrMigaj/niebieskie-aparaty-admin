@@ -19,6 +19,7 @@ export interface EventDto {
   username: string;
   imagePlaceholderObjectKey: string | null;
   galleryId: string | null;
+  selectionAvailable?: boolean;
 }
 
 export class Event {
@@ -33,6 +34,7 @@ export class Event {
     private username: string,
     private imagePlaceholderObjectKey: string | null = null,
     galleryId: string | null = null,
+    private selectionAvailable?: boolean,
   ) {
     this.eventId = uuidv4();
     this.createdAt = new Date();
@@ -40,18 +42,25 @@ export class Event {
   }
 
   async save(): Promise<Event> {
+    const item: any = {
+      eventId: this.eventId,
+      createdAt: this.createdAt.toISOString(),
+      date: this.date,
+      description: this.description,
+      title: this.title,
+      username: this.username,
+      imagePlaceholderObjectKey: this.imagePlaceholderObjectKey,
+      galleryId: this.galleryId,
+    };
+
+    // Only include selectionAvailable if it's defined
+    if (this.selectionAvailable !== undefined) {
+      item.selectionAvailable = this.selectionAvailable;
+    }
+
     const command = new PutCommand({
       TableName: TABLE_NAME,
-      Item: {
-        eventId: this.eventId,
-        createdAt: this.createdAt.toISOString(),
-        date: this.date,
-        description: this.description,
-        title: this.title,
-        username: this.username,
-        imagePlaceholderObjectKey: this.imagePlaceholderObjectKey,
-        galleryId: this.galleryId,
-      },
+      Item: item,
     });
     await dynamoDb.send(command);
     return this;
@@ -74,6 +83,7 @@ export class Event {
         item.username,
         item.imagePlaceholderObjectKey,
         item.galleryId,
+        item.selectionAvailable,
       );
       event.eventId = item.eventId;
       event.createdAt = new Date(item.createdAt);
@@ -98,6 +108,7 @@ export class Event {
       Item.username,
       Item.imagePlaceholderObjectKey,
       Item.galleryId,
+      Item.selectionAvailable,
     );
     event.eventId = Item.eventId;
     event.createdAt = new Date(Item.createdAt);
@@ -142,8 +153,25 @@ export class Event {
     await dynamoDb.send(command);
   }
 
+  static async updateSelectionAvailable(
+    eventId: string,
+    selectionAvailable: boolean,
+  ): Promise<void> {
+    const command = new UpdateCommand({
+      TableName: TABLE_NAME,
+      Key: { eventId },
+      UpdateExpression: 'SET selectionAvailable = :selectionAvailable',
+      ExpressionAttributeValues: {
+        ':selectionAvailable': selectionAvailable,
+      },
+      ConditionExpression: 'attribute_exists(eventId)',
+    });
+
+    await dynamoDb.send(command);
+  }
+
   toResponse(): EventDto {
-    return {
+    const response: EventDto = {
       eventId: this.eventId,
       createdAt: this.createdAt,
       date: this.date,
@@ -153,9 +181,24 @@ export class Event {
       imagePlaceholderObjectKey: this.imagePlaceholderObjectKey,
       galleryId: this.galleryId,
     };
+
+    // Only include selectionAvailable if it's defined
+    if (this.selectionAvailable !== undefined) {
+      response.selectionAvailable = this.selectionAvailable;
+    }
+
+    return response;
   }
 
   getEventId(): string {
     return this.eventId;
+  }
+
+  getSelectionAvailable(): boolean | undefined {
+    return this.selectionAvailable;
+  }
+
+  setSelectionAvailable(selectionAvailable: boolean | undefined): void {
+    this.selectionAvailable = selectionAvailable;
   }
 }
