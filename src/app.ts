@@ -24,6 +24,7 @@ import fileRoutes from './apps/file//infrastructure/mvc/fileRoutes';
 import authRoutes from './apps/auth/authRoutes';
 import uploadRoutes from './apps/upload/uploadRoutes';
 import selectionRoutes from './apps/selection/infrastructure/mvc/selectionRoutes';
+import selectionRestRoutes from './apps/selection/infrastructure/rest/selectionRestRoutes';
 
 // Import middleware
 import { errorHandler } from './middleware/errorMiddleware';
@@ -122,6 +123,7 @@ app.use('', adminAuthRoutes);
 app.use('/api/users', userRestRoutes);
 app.use('/api/events', eventRestRoutes);
 app.use('/api/files', fileRestRoutes);
+app.use('/api/selections', selectionRestRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/upload', uploadRoutes);
 
