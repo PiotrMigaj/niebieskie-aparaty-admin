@@ -10,6 +10,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { s3Client, S3_BUCKET_NAME } from '../../../../config/s3config';
 import { generatePresignedUrlForObjectKey } from '../../../../utils/s3';
 import logger from '../../../../utils/logger';
+import { v4 as uuidv4 } from 'uuid';
 
 @injectable()
 export class EventRestController {
@@ -127,6 +128,45 @@ export class EventRestController {
     } catch (error) {
       throw createAppError(500, 'Failed to generate upload URL');
     }
+  });
+
+  toggleCamelGallery = asyncHandler(async (req: Request, res: Response) => {
+    const { eventId } = req.params;
+    const { camelGallery } = req.body;
+
+    if (typeof camelGallery !== 'boolean') {
+      throw createAppError(400, 'camelGallery must be a boolean value');
+    }
+
+    const event = await this.eventFacade.getEventById(eventId);
+    if (!event) {
+      throw createAppError(404, 'Event not found');
+    }
+
+    await this.eventFacade.updateCamelGallery(eventId, camelGallery);
+    res.status(200).json({ message: 'Gallery status updated successfully', camelGallery });
+  });
+
+  updateToken = asyncHandler(async (req: Request, res: Response) => {
+    const { eventId } = req.params;
+    const { validDays } = req.body;
+
+    if (typeof validDays !== 'number' || !Number.isInteger(validDays) || validDays < 1) {
+      throw createAppError(400, 'validDays must be a positive integer');
+    }
+
+    const event = await this.eventFacade.getEventById(eventId);
+    if (!event) {
+      throw createAppError(404, 'Event not found');
+    }
+
+    const tokenId = uuidv4();
+    const tokenIdCreatedAt = new Date().toISOString().split('T')[0];
+    const tokenIdValidDays = String(validDays);
+
+    await this.eventFacade.updateToken(eventId, tokenId, tokenIdCreatedAt, tokenIdValidDays);
+
+    res.status(200).json({ message: 'Token updated successfully', tokenId, tokenIdCreatedAt, tokenIdValidDays });
   });
 
   toggleSelectionAvailable = asyncHandler(async (req: Request, res: Response) => {

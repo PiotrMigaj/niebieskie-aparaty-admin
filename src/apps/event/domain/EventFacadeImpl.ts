@@ -50,4 +50,25 @@ export class EventFacadeImpl implements EventFacade {
     }
     await Event.updateSelectionAvailable(eventId, selectionAvailable);
   }
+
+  async updateCamelGallery(eventId: string, camelGallery: boolean): Promise<void> {
+    const eventExists = await Event.existsById(eventId);
+    if (!eventExists) {
+      throw createAppError(404, 'Event not found');
+    }
+    await Event.updateCamelGallery(eventId, camelGallery);
+  }
+
+  async updateToken(
+    eventId: string,
+    tokenId: string,
+    tokenIdCreatedAt: string,
+    tokenIdValidDays: string,
+  ): Promise<void> {
+    const eventExists = await Event.existsById(eventId);
+    if (!eventExists) {
+      throw createAppError(404, 'Event not found');
+    }
+    await Event.updateToken(eventId, tokenId, tokenIdCreatedAt, tokenIdValidDays);
+  }
 }

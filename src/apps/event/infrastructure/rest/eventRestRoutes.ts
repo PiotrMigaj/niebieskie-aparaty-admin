@@ -236,4 +236,16 @@ router.patch(
   eventRestController.toggleSelectionAvailable.bind(eventRestController),
 );
 
+router.patch(
+  '/:eventId/toggle-camel-gallery',
+  ensureAuthenticated,
+  eventRestController.toggleCamelGallery.bind(eventRestController),
+);
+
+router.patch(
+  '/:eventId/token',
+  ensureAuthenticated,
+  eventRestController.updateToken.bind(eventRestController),
+);
+
 export default router;

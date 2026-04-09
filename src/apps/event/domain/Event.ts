@@ -20,6 +20,10 @@ export interface EventDto {
   imagePlaceholderObjectKey: string | null;
   galleryId: string | null;
   selectionAvailable?: boolean;
+  camelGallery?: boolean;
+  tokenId?: string;
+  tokenIdCreatedAt?: string;
+  tokenIdValidDays?: string;
 }
 
 export class Event {
@@ -35,6 +39,10 @@ export class Event {
     private imagePlaceholderObjectKey: string | null = null,
     galleryId: string | null = null,
     private selectionAvailable?: boolean,
+    private camelGallery?: boolean,
+    private tokenId?: string,
+    private tokenIdCreatedAt?: string,
+    private tokenIdValidDays?: string,
   ) {
     this.eventId = uuidv4();
     this.createdAt = new Date();
@@ -56,6 +64,18 @@ export class Event {
     // Only include selectionAvailable if it's defined
     if (this.selectionAvailable !== undefined) {
       item.selectionAvailable = this.selectionAvailable;
+    }
+    if (this.camelGallery !== undefined) {
+      item.camelGallery = this.camelGallery;
+    }
+    if (this.tokenId !== undefined) {
+      item.tokenId = this.tokenId;
+    }
+    if (this.tokenIdCreatedAt !== undefined) {
+      item.tokenIdCreatedAt = this.tokenIdCreatedAt;
+    }
+    if (this.tokenIdValidDays !== undefined) {
+      item.tokenIdValidDays = this.tokenIdValidDays;
     }
 
     const command = new PutCommand({
@@ -84,6 +104,10 @@ export class Event {
         item.imagePlaceholderObjectKey,
         item.galleryId,
         item.selectionAvailable,
+        item.camelGallery,
+        item.tokenId,
+        item.tokenIdCreatedAt,
+        item.tokenIdValidDays,
       );
       event.eventId = item.eventId;
       event.createdAt = new Date(item.createdAt);
@@ -109,6 +133,10 @@ export class Event {
       Item.imagePlaceholderObjectKey,
       Item.galleryId,
       Item.selectionAvailable,
+      Item.camelGallery,
+      Item.tokenId,
+      Item.tokenIdCreatedAt,
+      Item.tokenIdValidDays,
     );
     event.eventId = Item.eventId;
     event.createdAt = new Date(Item.createdAt);
@@ -170,6 +198,42 @@ export class Event {
     await dynamoDb.send(command);
   }
 
+  static async updateCamelGallery(eventId: string, camelGallery: boolean): Promise<void> {
+    const command = new UpdateCommand({
+      TableName: TABLE_NAME,
+      Key: { eventId },
+      UpdateExpression: 'SET camelGallery = :camelGallery',
+      ExpressionAttributeValues: {
+        ':camelGallery': camelGallery,
+      },
+      ConditionExpression: 'attribute_exists(eventId)',
+    });
+
+    await dynamoDb.send(command);
+  }
+
+  static async updateToken(
+    eventId: string,
+    tokenId: string,
+    tokenIdCreatedAt: string,
+    tokenIdValidDays: string,
+  ): Promise<void> {
+    const command = new UpdateCommand({
+      TableName: TABLE_NAME,
+      Key: { eventId },
+      UpdateExpression:
+        'SET tokenId = :tokenId, tokenIdCreatedAt = :tokenIdCreatedAt, tokenIdValidDays = :tokenIdValidDays',
+      ExpressionAttributeValues: {
+        ':tokenId': tokenId,
+        ':tokenIdCreatedAt': tokenIdCreatedAt,
+        ':tokenIdValidDays': tokenIdValidDays,
+      },
+      ConditionExpression: 'attribute_exists(eventId)',
+    });
+
+    await dynamoDb.send(command);
+  }
+
   toResponse(): EventDto {
     const response: EventDto = {
       eventId: this.eventId,
@@ -185,6 +249,18 @@ export class Event {
     // Only include selectionAvailable if it's defined
     if (this.selectionAvailable !== undefined) {
       response.selectionAvailable = this.selectionAvailable;
+    }
+    if (this.camelGallery !== undefined) {
+      response.camelGallery = this.camelGallery;
+    }
+    if (this.tokenId !== undefined) {
+      response.tokenId = this.tokenId;
+    }
+    if (this.tokenIdCreatedAt !== undefined) {
+      response.tokenIdCreatedAt = this.tokenIdCreatedAt;
+    }
+    if (this.tokenIdValidDays !== undefined) {
+      response.tokenIdValidDays = this.tokenIdValidDays;
     }
 
     return response;

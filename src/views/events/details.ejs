@@ -401,12 +401,26 @@
       <div class="detail-row">
         <div class="detail-label">Gallery Status</div>
         <div class="detail-value">
-          <div class="gallery-status">
-            <% if (event.galleryId) { %>
-              <span class="badge badge-success">Gallery Available</span>
-            <% } else { %>
-              <span class="badge badge-warning">No Gallery Created</span>
-            <% } %>
+          <div class="d-flex align-items-center gap-3">
+            <div class="gallery-status">
+              <% if (event.camelGallery) { %>
+                <span class="badge badge-success">Gallery Available</span>
+              <% } else { %>
+                <span class="badge badge-warning">No Gallery Created</span>
+              <% } %>
+            </div>
+            <button
+              id="toggleCamelGalleryBtn"
+              class="btn btn-sm btn-outline-dark"
+              data-event-id="<%= event.eventId %>"
+              data-current-status="<%= event.camelGallery %>"
+            >
+              <% if (event.camelGallery) { %>
+                Disable Gallery
+              <% } else { %>
+                Enable Gallery
+              <% } %>
+            </button>
           </div>
           <% if (event.galleryId) { %>
             <div class="gallery-id">
@@ -415,6 +429,54 @@
               </code>
             </div>
           <% } %>
+        </div>
+      </div>
+
+      <%
+        let tokenIsValid = false;
+        let tokenExpiresAt = null;
+        if (event.tokenId && event.tokenIdCreatedAt && event.tokenIdValidDays) {
+          const createdAt = new Date(event.tokenIdCreatedAt);
+          const validDays = parseInt(event.tokenIdValidDays, 10);
+          tokenExpiresAt = new Date(createdAt);
+          tokenExpiresAt.setDate(tokenExpiresAt.getDate() + validDays);
+          tokenIsValid = new Date() <= tokenExpiresAt;
+        }
+      %>
+
+      <div class="detail-row">
+        <div class="detail-label">Access Token</div>
+        <div class="detail-value">
+          <% if (event.tokenId) { %>
+            <div class="mb-2">
+              <% if (tokenIsValid) { %>
+                <span class="badge badge-success">Valid until <%= tokenExpiresAt.toLocaleDateString() %></span>
+              <% } else { %>
+                <span class="badge" style="background-color: #dc3545; color: white;">Expired</span>
+              <% } %>
+            </div>
+            <% if (tokenIsValid) { %>
+              <div class="mb-2">
+                <code class="event-id" onclick="navigator.clipboard.writeText(this.textContent)" title="Click to copy">https://gallery.niebieskie-aparaty.pl?tokenId=<%= event.tokenId %></code>
+              </div>
+            <% } %>
+          <% } else { %>
+            <div class="mb-2">
+              <span class="badge badge-warning">No Token Created</span>
+            </div>
+          <% } %>
+
+          <button type="button" id="createTokenBtn" class="btn btn-sm btn-outline-dark">
+            <%= event.tokenId ? 'Regenerate Token' : 'Create Token' %>
+          </button>
+
+          <div id="tokenForm" class="mt-2" style="display: none;">
+            <div class="d-flex align-items-center gap-2">
+              <input type="number" id="validDaysInput" class="form-control form-control-sm" style="max-width: 120px;" placeholder="Valid days" min="1" />
+              <button type="button" id="saveTokenBtn" class="btn btn-sm btn-dark">Save</button>
+              <span id="tokenErrorMsg" class="status-message error" style="display:none;"></span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

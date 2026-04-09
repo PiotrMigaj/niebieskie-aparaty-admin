@@ -9,8 +9,89 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressPercentage = document.getElementById('progressPercentage');
   const statusMessage = document.getElementById('statusMessage');
   const toggleSelectionBtn = document.getElementById('toggleSelectionBtn');
+  const toggleCamelGalleryBtn = document.getElementById('toggleCamelGalleryBtn');
+  const createTokenBtn = document.getElementById('createTokenBtn');
+  const tokenForm = document.getElementById('tokenForm');
+  const saveTokenBtn = document.getElementById('saveTokenBtn');
+  const validDaysInput = document.getElementById('validDaysInput');
+  const tokenErrorMsg = document.getElementById('tokenErrorMsg');
 
   let selectedFile = null;
+
+  // Toggle camelGallery
+  if (toggleCamelGalleryBtn) {
+    toggleCamelGalleryBtn.addEventListener('click', async () => {
+      const eventId = toggleCamelGalleryBtn.dataset.eventId;
+      const newStatus = toggleCamelGalleryBtn.dataset.currentStatus !== 'true';
+
+      toggleCamelGalleryBtn.disabled = true;
+      toggleCamelGalleryBtn.textContent = 'Updating...';
+
+      try {
+        const response = await fetch(`/api/events/${eventId}/toggle-camel-gallery`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ camelGallery: newStatus }),
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || `Failed to update gallery status: ${response.status}`);
+        }
+
+        window.location.reload();
+      } catch (error) {
+        console.error('Error toggling gallery:', error);
+        toggleCamelGalleryBtn.disabled = false;
+        toggleCamelGalleryBtn.textContent = newStatus ? 'Disable Gallery' : 'Enable Gallery';
+      }
+    });
+  }
+
+  // Create / regenerate access token
+  if (createTokenBtn) {
+    createTokenBtn.addEventListener('click', () => {
+      tokenForm.style.display = tokenForm.style.display === 'none' ? 'block' : 'none';
+    });
+  }
+
+  if (saveTokenBtn) {
+    saveTokenBtn.addEventListener('click', async () => {
+      const validDays = parseInt(validDaysInput.value, 10);
+      if (!validDays || validDays < 1) {
+        tokenErrorMsg.textContent = 'Please enter a valid number of days.';
+        tokenErrorMsg.style.display = 'inline';
+        return;
+      }
+      tokenErrorMsg.style.display = 'none';
+
+      saveTokenBtn.disabled = true;
+      saveTokenBtn.textContent = 'Saving...';
+
+      try {
+        const response = await fetch(`/api/events/${eventId}/token`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ validDays }),
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || `Failed to save token: ${response.status}`);
+        }
+
+        window.location.reload();
+      } catch (error) {
+        console.error('Error creating token:', error);
+        tokenErrorMsg.textContent = `Error: ${error.message}`;
+        tokenErrorMsg.style.display = 'inline';
+        saveTokenBtn.disabled = false;
+        saveTokenBtn.textContent = 'Save';
+      }
+    });
+  }
 
   // Toggle selection availability
   if (toggleSelectionBtn && !toggleSelectionBtn.disabled) {
